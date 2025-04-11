@@ -37,6 +37,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'apps.users',
+    'apps.albums',
+    'apps.artists',
+    'apps.genres',
+    'apps.libraries',
+    'apps.payments',
+    'apps.playlists',
+    'apps.playlist_songs',
+    'apps.songs',
 ]
 
 MIDDLEWARE = [
@@ -47,8 +57,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
-    'apps.users',
 ]
 
 ROOT_URLCONF = 'server.urls'
@@ -77,10 +85,15 @@ WSGI_APPLICATION = 'server.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'spotify_db',
+        'USER': 'spotify_user',
+        'PASSWORD': 'spotify_pass',
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
+
 
 
 # Password validation
@@ -123,3 +136,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+print("=== LOADED MIDDLEWARE ===")
+for mw in MIDDLEWARE:
+    print(mw)

@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: python server/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - spotify_net
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: spotify_db
+      POSTGRES_USER: spotify_user
+      POSTGRES_PASSWORD: spotify_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - spotify_net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - spotify_net
+
+volumes:
+  postgres_data:
+
+networks:
+  spotify_net:
+    driver: bridge
