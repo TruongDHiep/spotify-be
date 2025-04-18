@@ -26,3 +26,4 @@ class Song(models.Model):
     file_upload = models.TextField()
     description = models.TextField(blank=True)
     mv = models.TextField()
+    play_count = models.IntegerField(default=0)
