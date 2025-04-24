@@ -1,8 +1,8 @@
-version: '3.8'
-
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: python server/manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code
@@ -10,16 +10,18 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    environment:
+      - DEBUG=1
     networks:
       - spotify_net
 
   db:
-    image: postgres
+    image: postgres:14
     restart: always
     environment:
-      POSTGRES_DB: spotify_db
-      POSTGRES_USER: spotify_user
-      POSTGRES_PASSWORD: spotify_pass
+      - POSTGRES_DB=spotify_db
+      - POSTGRES_USER=spotify_user
+      - POSTGRES_PASSWORD=spotify_pass
     ports:
       - "5432:5432"
     volumes:
@@ -28,11 +30,11 @@ services:
       - spotify_net
 
   pgadmin:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:6
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
     ports:
       - "5050:80"
     depends_on:
