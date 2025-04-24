@@ -25,25 +25,29 @@ class SongService:
         return query_set
     
     @staticmethod
-    def create_song(data,file_upload,img_upload,mv_upload):
+    def create_song(data, file_upload, img_upload, mv_upload):
         artists = data.pop("artists", [])  # Lấy artists ra khỏi data
-        song = Song.objects.create(**data)
-        if artists:
-            song.artists.set(artists)
-        # Upload file mp3
+        
+        # Upload và xử lý file trước khi tạo bản ghi Song
         if file_upload:
             file_url = upload_to_s3(file_upload, 'mnm/songfile')
             data['file_upload'] = SongService.timestate_url(file_url)
-        # Upload ảnh bài hát
+        
         if img_upload:
             img_url = upload_to_s3(img_upload, 'mnm/songimg')
             data['img'] = SongService.timestate_url(img_url)
-        # Upload video
+        
         if mv_upload:
             video_url = upload_to_s3(mv_upload, 'mnm/video')
             data['mv'] = SongService.timestate_url(video_url)
         else:
             data['mv'] = "none"
+        
+        # Tạo bản ghi Song sau khi đã có đầy đủ thông tin
         song = Song.objects.create(**data)
-        return song
-    
+        
+        # Thiết lập quan hệ nhiều-nhiều
+        if artists:
+            song.artists.set(artists)
+        
+        return song    

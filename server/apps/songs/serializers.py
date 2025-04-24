@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Song
 
-class SongSerializers(serializers.ModelSerializer):
+class SongSerializer(serializers.ModelSerializer):
     file_upload = serializers.FileField(write_only=True, required=False)
     img_upload = serializers.FileField(write_only=True, required=False)
     video_upload = serializers.FileField(write_only=True, required=False)
