@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'apps.playlists',
     'apps.playlist_songs',
     'apps.songs',
+    'apps.listening_history',
 ]
 
 MIDDLEWARE = [
