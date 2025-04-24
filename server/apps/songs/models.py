@@ -22,8 +22,11 @@ class Song(models.Model):
     related_name='featured_songs',
     blank=True
 )
-    img = models.TextField()
-    file_upload = models.TextField()
+    img = models.TextField(blank=True)
+    file_upload = models.TextField(blank=True)
     description = models.TextField(blank=True)
-    mv = models.TextField()
+    
+    mv = models.TextField(blank=True)
     play_count = models.IntegerField(default=0)
+    status = models.BooleanField(default=True)
+
