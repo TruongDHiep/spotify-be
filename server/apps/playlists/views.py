@@ -7,6 +7,9 @@ from .services import PlaylistService
 from apps.users.models import User 
 from apps.libraries.services import LibraryService
 
+import json
+
+
 class PlaylistListView(APIView):
     def get(self, request):
         """Get all playlists or filter by query params"""
@@ -61,25 +64,36 @@ class PlaylistDetailView(APIView):
         serializer = PlaylistSerializer(playlist)
         return Response(serializer.data)
     
-
     
-    def put(self, request, pk):
-        """Update a playlist (complete update)"""
-        playlist = PlaylistService.get_playlist_by_id(pk)
-        serializer = PlaylistSerializer(playlist, data=request.data)
-        serializer.is_valid(raise_exception=True)
+    # def put(self, request, pk, ):
+    #     """Update a playlist (complete update)"""
+    #     playlist = PlaylistService.get_playlist_by_id(pk)
+    #     serializer = PlaylistSerializer(playlist, data=request.data)
+    #     serializer.is_valid(raise_exception=True)
         
-        updated_playlist = PlaylistService.update_playlist(pk, serializer.validated_data)
-        response_serializer = PlaylistSerializer(updated_playlist)
-        return Response(response_serializer.data)
+    #     updated_playlist = PlaylistService.update_playlist(pk, serializer.validated_data,img_upload)
+    #     response_serializer = PlaylistSerializer(updated_playlist)
+    #     return Response(response_serializer.data)
     
+
     def patch(self, request, pk):
         """Update a playlist partially"""
         playlist = PlaylistService.get_playlist_by_id(pk)
-        serializer = PlaylistSerializer(playlist, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
         
-        updated_playlist = PlaylistService.update_playlist(pk, serializer.validated_data)
+        # Parse JSON data from FormData if it exists
+        form_data = {}
+        if 'data' in request.data:
+            try:
+                form_data = json.loads(request.data['data'])
+            except json.JSONDecodeError:
+                return Response({"error": "Invalid JSON in data field"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Update request.data with parsed data
+        serializer = PlaylistSerializer(playlist, data=form_data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        img_upload = request.FILES.get('img_upload')
+        
+        updated_playlist = PlaylistService.update_playlist(pk, serializer.validated_data, img_upload)
         response_serializer = PlaylistSerializer(updated_playlist)
         return Response(response_serializer.data)
     

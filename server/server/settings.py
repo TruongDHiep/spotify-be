@@ -94,11 +94,11 @@ WSGI_APPLICATION = 'server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'spotify_db',
-        'USER': 'spotify_user',
-        'PASSWORD': 'spotify_pass',
-        'HOST': 'db',
-        'PORT': 5432,
+        'NAME': os.getenv('DB_NAME', 'spotify_db'),
+        'USER': os.getenv('DB_USER', 'spotify_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'spotify_pass'),
+        'HOST': os.getenv('DB_HOST', 'db'),
+        'PORT': int(os.getenv('DB_PORT', 5432)),
     }
 }
 

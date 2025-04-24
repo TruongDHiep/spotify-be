@@ -1,8 +1,20 @@
 from django.shortcuts import get_object_or_404
 from .models import Playlist
 from rest_framework.exceptions import ValidationError
+from server.utils import *
+
+import time
+
 
 class PlaylistService:
+    
+    @staticmethod
+    def timestate_url(url):
+        timestamp = int(time.time())
+        cache_busting_url = f"{url}?t={timestamp}"
+        return cache_busting_url
+    
+    
     @staticmethod
     def get_playlists(filters):
         """Get playlists with optional filtering"""
@@ -30,9 +42,13 @@ class PlaylistService:
         return playlist
     
     @staticmethod
-    def update_playlist(playlist_id, data):
+    def update_playlist(playlist_id, data, img_upload):
         """Update an existing playlist"""
+        
         playlist = get_object_or_404(Playlist, id=playlist_id)
+        if img_upload:
+            img_url = upload_to_s3(img_upload, 'mnm/playlistImgs')
+            playlist.cover_image = PlaylistService.timestate_url(img_url)
         
         for key, value in data.items():
             setattr(playlist, key, value)
