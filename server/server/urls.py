@@ -11,6 +11,8 @@ urlpatterns = [
     path('api/albums/', include('apps.albums.urls')),
     path('api/users/', include('apps.users.urls')),
     path('api/playlists/', include('apps.playlists.urls')),
+    path('api/song/',include('apps.songs.urls')),
     path('api/libraries/', include('apps.libraries.urls')),
-    path('', home),  # Add this line for the root path
+    path('', home), 
+    path('api/playlist_songs/', include('apps.playlist_songs.urls')),
 ]

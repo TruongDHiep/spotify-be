@@ -34,6 +34,7 @@ class LibraryService:
                     continue
             
                 library_items.append(serialized)
+                library_items[-1]['item_type'] = item_type
 
             except Exception as e:
                 print(f"Error getting {item_type} with id {item_id}: {str(e)}")
