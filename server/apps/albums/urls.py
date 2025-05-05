@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import get_albums, get_album_detail, create_album, update_album, delete_album
+from .views import *
 
 urlpatterns = [
     path('', get_albums, name='get_albums'),

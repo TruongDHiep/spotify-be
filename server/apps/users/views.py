@@ -8,6 +8,14 @@ from .services import UserService
 from .models import User
 
 # Giữ UserUpdateView hiện tại
+class UserIDView(APIView):
+    def get(self, request, id):
+        user = UserService.get_user_by_id(id)
+        if user is None:
+            return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(UserUpdateSerializer(user).data)
+
+    
 class UserUpdateView(APIView):
     def put(self, request, id):
         serializer = UserUpdateSerializer(data=request.data, partial=True)

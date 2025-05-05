@@ -103,3 +103,11 @@ class UserService:
             )
             
             return user, True
+
+    @staticmethod
+    def get_user_by_id(user_id):
+        try:
+            user = User.objects.get(id=user_id)
+        except ObjectDoesNotExist:
+            return None
+        return user

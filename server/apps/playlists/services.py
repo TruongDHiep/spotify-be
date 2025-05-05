@@ -34,6 +34,13 @@ class PlaylistService:
         return get_object_or_404(Playlist, id=playlist_id)
     
     @staticmethod
+    def get_playlists_by_user(user_id):
+        """
+        Lấy tất cả playlist của một user cụ thể
+        """
+        return Playlist.objects.filter(user_id=user_id)
+    
+    @staticmethod
     def create_playlist(data):
         """Create a new playlist"""
         # add a number to name
@@ -61,14 +68,7 @@ class PlaylistService:
         """Delete a playlist"""
         playlist = get_object_or_404(Playlist, id=playlist_id)
         playlist.delete()
-        
-    @staticmethod
-    def add_song_to_playlist(playlist_id, song_id):
-        """Add a song to a playlist"""
-        playlist = get_object_or_404(Playlist, id=playlist_id)
-        playlist.songs.add(song_id)
-        playlist.save()
-        return playlist
+
         
     @staticmethod
     def remove_song_from_playlist(playlist_id, song_id):
