@@ -16,7 +16,7 @@ services:
       - spotify_net
 
   db:
-    image: postgres:14
+    image: postgres:latest
     restart: always
     environment:
       - POSTGRES_DB=spotify_db

@@ -6,7 +6,6 @@ from .serializers import SongSerializer
 from .services import SongService
 import json
 
-
 # Create your views here.
 class SongListView(APIView):
     def get(self, request):
@@ -29,13 +28,29 @@ class SongListView(APIView):
         validated_data = serializer.validated_data.copy()
 
         # Lấy file từ request.FILES
-        file_upload = request.FILES.get('file_upload')
+        file = request.FILES.get('file')
         img_upload = request.FILES.get('img_upload')
         video_upload = request.FILES.get('video_upload')
-
         # Gọi service để tạo bài hát
-        song = SongService.create_song(validated_data, file_upload, img_upload, video_upload)
-
+        song = SongService.create_song(validated_data, file, img_upload, video_upload)
         # Trả về kết quả
         response_serializer = SongSerializer(song)
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+    
+    def delete(self, request,song_id):
+        """Delete song by id"""
+        try:
+            SongService.delete_song(song_id)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Song.DoesNotExist:
+            return Response(
+                {"error": "Song not found"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+class TopSongsView(APIView):
+    def get(self, request):
+        """Get top 10 songs by play count"""
+        songs = SongService.get_top_songs()
+        serializer = SongSerializer(songs, many=True)
+        return Response(serializer.data)
