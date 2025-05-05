@@ -4,6 +4,14 @@ from rest_framework import status
 from .serializers import UserUpdateSerializer
 from .services import UserService
 
+class UserIDView(APIView):
+    def get(self, request, id):
+        user = UserService.get_user_by_id(id)
+        if user is None:
+            return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response(UserUpdateSerializer(user).data)
+
+    
 class UserUpdateView(APIView):
     def put(self, request, id):
         serializer = UserUpdateSerializer(data=request.data, partial=True)
@@ -14,3 +22,4 @@ class UserUpdateView(APIView):
             return Response(UserUpdateSerializer(user).data)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
