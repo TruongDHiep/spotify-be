@@ -61,14 +61,7 @@ class PlaylistService:
         """Delete a playlist"""
         playlist = get_object_or_404(Playlist, id=playlist_id)
         playlist.delete()
-        
-    @staticmethod
-    def add_song_to_playlist(playlist_id, song_id):
-        """Add a song to a playlist"""
-        playlist = get_object_or_404(Playlist, id=playlist_id)
-        playlist.songs.add(song_id)
-        playlist.save()
-        return playlist
+
         
     @staticmethod
     def remove_song_from_playlist(playlist_id, song_id):

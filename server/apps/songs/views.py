@@ -7,6 +7,14 @@ from .services import SongService
 import json
 
 # Create your views here.
+class SongDetailView(APIView):
+    def get(self, request, song_id):
+        """song by ID"""
+        song = SongService.get_song_by_id(song_id)
+        serializer = SongSerializer(song)
+        return Response(serializer.data)
+
+
 class SongListView(APIView):
     def get(self, request):
         """Get all song"""
@@ -121,5 +129,12 @@ class SongPaginationView(APIView):
             page_size = 8
             
         songs = SongService.get_song_bypage(page, page_size)
+        serializer = SongSerializer(songs, many=True)
+        return Response(serializer.data)
+
+class SongsByAlbumView(APIView):
+    def get(self, request, album_id):
+        """Lấy tất cả bài hát theo album ID"""
+        songs = SongService.get_songs_by_album(album_id)
         serializer = SongSerializer(songs, many=True)
         return Response(serializer.data)

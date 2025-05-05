@@ -101,16 +101,3 @@ class PlaylistDetailView(APIView):
         """Delete a playlist"""
         PlaylistService.delete_playlist(pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-class PlaylistSongView(APIView):
-    def post(self, request, playlist_id, song_id):
-        """Add a song to a playlist"""
-        playlist = PlaylistService.add_song_to_playlist(playlist_id, song_id)
-        serializer = PlaylistSerializer(playlist)
-        return Response(serializer.data)
-    
-    def delete(self, request, playlist_id, song_id):
-        """Remove a song from a playlist"""
-        playlist = PlaylistService.remove_song_from_playlist(playlist_id, song_id)
-        serializer = PlaylistSerializer(playlist)
-        return Response(serializer.data)

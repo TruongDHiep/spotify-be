@@ -4,6 +4,7 @@ from rest_framework import status
 from .services import AlbumService
 from .serializers import AlbumSerializer
 
+
 @api_view(['GET'])
 def get_albums(request):
     """Get a list of albums"""
@@ -41,3 +42,4 @@ def delete_album(request, album_id):
     """Delete an album"""
     AlbumService.delete_album(album_id)
     return Response(status=status.HTTP_204_NO_CONTENT)
+
