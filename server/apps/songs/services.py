@@ -43,6 +43,13 @@ class SongService:
     def get_top_songs(limit=10):
         """Get top songs by play count"""
         return Song.objects.order_by('-play_count')[:limit]
+    
+    @staticmethod
+    def get_songs_by_album(album_id):
+        """
+        Lấy tất cả bài hát thuộc về một album cụ thể
+        """
+        return Song.objects.filter(album_id=album_id)
 
     @staticmethod
     def get_song_bypage(page,pageSize = 8):
