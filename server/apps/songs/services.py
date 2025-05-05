@@ -75,44 +75,67 @@ class SongService:
         return song    
     
     @staticmethod
-    def update_song(song_id, data, file_upload=None, img_upload=None, mv_upload=None):
-        song = get_object_or_404(Song, id=song_id)
-        # Upload và xử lý file trước khi cập nhật bản ghi Song
-        if file_upload:
-            if song.file_upload:  # kiểm tra có file cũ không
-                delete_from_s3(song.file_upload)
-            file_url = upload_to_s3(file_upload, 'mnm/songfile')
-            data['file_upload'] = SongService.timestate_url(file_url)
-        if img_upload:
-            if song.img:  # kiểm tra có ảnh cũ không
-                delete_from_s3(song.img)
-            img_url = upload_to_s3(img_upload, 'mnm/songimg')
-            data['img'] = SongService.timestate_url(img_url)
-        if mv_upload:
-            if song.mv and song.mv != "none":  # kiểm tra có MV cũ không
-                delete_from_s3(song.mv)
-            video_url = upload_to_s3(mv_upload, 'mnm/video')
-            data['mv'] = SongService.timestate_url(video_url)
-        elif song.mv != "none":
-        # Nếu không upload mv mới và mv cũ tồn tại, ta giữ nguyên mv cũ
-            pass
-        else:
-        # Nếu không upload mv mới và mv cũ là "none", gán lại "none"
-            data['mv'] = "none"
-        # Cập nhật bản ghi Song sau khi đã có đầy đủ thông tin
+    def update_song(song_id, data, artists_data=None, file_upload=None, img_upload=None, mv_upload=None):
+        song = Song.objects.get(id=song_id)
+        
+        # Cập nhật các trường thông thường
         for key, value in data.items():
             setattr(song, key, value)
+        
+        # Cập nhật artists sử dụng phương thức set()
+        if artists_data is not None:
+            song.artists.set(artists_data)
+        
+        # Xử lý upload files
+        if file_upload:
+            # Xóa file cũ nếu có
+            if song.file_upload:
+                delete_from_s3(song.file_upload)
+            # Upload file mới và thêm timestamp
+            file_url = upload_to_s3(file_upload, 'mnm/songfile')
+            song.file_upload = SongService.timestate_url(file_url)
+        
+        if img_upload:
+            # Xóa ảnh cũ nếu có
+            if song.img:
+                delete_from_s3(song.img)
+            # Upload ảnh mới và thêm timestamp
+            img_url = upload_to_s3(img_upload, 'mnm/songimg')
+            song.img = SongService.timestate_url(img_url)
+        
+        if mv_upload:
+            # Xóa video cũ nếu có
+            if song.mv and song.mv != "none":
+                delete_from_s3(song.mv)
+            # Upload video mới và thêm timestamp
+            video_url = upload_to_s3(mv_upload, 'mnm/video')
+            song.mv = SongService.timestate_url(video_url)
+        
         song.save()
         return song
     
     @staticmethod
-    def delete_song(song_id):
+    def update_play_count(song_id):
+        """Update play count for a song"""
         song = get_object_or_404(Song, id=song_id)
-        # Xóa file cũ nếu có
-        if song.file_upload:
-            delete_from_s3(song.file_upload)
-        if song.img:
-            delete_from_s3(song.img)
-        if song.mv and song.mv != "none":
-            delete_from_s3(song.mv)
-        song.delete()
+        song.play_count += 1
+        song.save()
+        return song
+
+    @staticmethod
+    def delete_song(song_id):
+        # song = get_object_or_404(Song, id=song_id)
+        # # Xóa file cũ nếu có
+        # if song.file_upload:
+        #     delete_from_s3(song.file_upload)
+        # if song.img:
+        #     delete_from_s3(song.img)
+        # if song.mv and song.mv != "none":
+        #     delete_from_s3(song.mv)
+        # song.delete()
+        """Toggle song status instead of deleting"""
+        song = get_object_or_404(Song, id=song_id)
+        # Đảo ngược giá trị status
+        song.status = not song.status
+        song.save()
+        return song
