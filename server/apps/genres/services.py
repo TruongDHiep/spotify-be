@@ -22,7 +22,7 @@ class GenreService:
         genre.save()
         return genre
 
-    @staticmethod
-    def delete_genre(genre_id):
-        genre = get_object_or_404(Genre, id=genre_id)
-        genre.delete()
+    # @staticmethod
+    # def delete_genre(genre_id):
+    #     genre = get_object_or_404(Genre, id=genre_id)
+    #     genre.delete()
