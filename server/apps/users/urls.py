@@ -3,4 +3,5 @@ from .views import UserUpdateView
 
 urlpatterns = [
     path('<int:id>/', UserUpdateView.as_view(), name='user-update'),
+
 ]

@@ -38,7 +38,7 @@ class PaymentView(APIView):
         partnerCode = "MOMO"
         accessKey = "F8BBA842ECF85"
         secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz"
-        redirectUrl = "https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b"
+        redirectUrl = f"http://localhost:3000/user/payment/success?userId={user_id}&amount={amount}&payDate={pay_date}"
         ipnUrl = redirectUrl
         requestType = "payWithATM"
         orderId = str(uuid.uuid4())
@@ -79,17 +79,6 @@ class PaymentView(APIView):
         pay_url = result.get("payUrl")
 
         if pay_url:
-            # Gọi service để lưu vào database
-            payment_data = {
-                "user_id": user_id,
-                "amount": amount,
-                "pay_date": pay_date,
-                "expr_date": expr_date,
-                "status": "pending",  # hoặc khởi tạo là pending
-            }
-
-            PaymentService.create_payment(payment_data)
-
             return Response({"payUrl": pay_url})
         return Response({"error": "Không thể tạo liên kết thanh toán."}, status=400)
 
@@ -100,3 +89,31 @@ class CSRFTokenView(APIView):
 
     def get(self, request):
         return JsonResponse({"message": "CSRF cookie set."})
+    
+class SavePaymentView(APIView):
+    permission_classes = [AllowAny]  # Cho phép không đăng nhập
+
+    def post(self, request):
+        data = request.data
+        user_id = data.get("userId")
+        amount = data.get("amount")
+        pay_date = data.get("payDate")
+        expr_date = data.get("exprDate")
+        status = data.get("status", "pending")
+
+        if not user_id:
+            return Response({"error": "Thiếu userId"}, status=400)
+
+        # Lưu payment
+        try:
+            PaymentService.create_payment({
+                "user_id": user_id,
+                "amount": amount,
+                "pay_date": pay_date,
+                "expr_date": expr_date,
+                "status": status
+            })
+            return Response({"success": 1})
+        except Exception as e:
+            return Response({"success": 0, "errormsg": str(e)}, status=500)
+
