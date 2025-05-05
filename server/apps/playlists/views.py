@@ -101,3 +101,10 @@ class PlaylistDetailView(APIView):
         """Delete a playlist"""
         PlaylistService.delete_playlist(pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class PlaylistsByUserView(APIView):
+    def get(self, request, user_id):
+        """Lấy tất cả playlist theo user ID"""
+        playlists = PlaylistService.get_playlists_by_user(user_id)
+        serializer = PlaylistSerializer(playlists, many=True)
+        return Response(serializer.data)

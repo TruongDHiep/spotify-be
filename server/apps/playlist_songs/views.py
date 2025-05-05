@@ -32,3 +32,11 @@ class PlaylistSongsListView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": "An error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def delete(self, request, playlist_id, song_id):
+        """Xóa một bài hát khỏi playlist"""
+        try:
+            result = Playlist_SongService.remove_song_from_playlist(playlist_id, song_id)
+            return Response(result, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
