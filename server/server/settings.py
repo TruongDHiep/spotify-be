@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-1-f+l+eg6jqph3=i&csa=)2*36-(!s_lu^dfppx5u89tz9_yqx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -147,6 +147,29 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+]
+# Thay đổi CORS settings
+CORS_ALLOW_ALL_ORIGINS = True 
+
+# Thêm các CORS settings bổ sung
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
