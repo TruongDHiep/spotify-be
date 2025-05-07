@@ -46,6 +46,13 @@ class PlaylistService:
         return get_object_or_404(Playlist, id=playlist_id)
     
     @staticmethod
+    def get_playlists_by_user(user_id):
+        """
+        Lấy tất cả playlist của một user cụ thể
+        """
+        return Playlist.objects.filter(user_id=user_id)
+    
+    @staticmethod
     def create_playlist(data):
         """Create a new playlist"""
         # add a number to name

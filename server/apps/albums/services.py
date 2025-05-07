@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from .models import Album
+from apps.artists.models import Artist
 from rest_framework.exceptions import ValidationError
 
 class AlbumService:
@@ -34,3 +35,9 @@ class AlbumService:
         """Delete an album"""
         album = get_object_or_404(Album, id=album_id)
         album.delete()
+
+    @staticmethod
+    def get_albums_by_artist(artist_id):
+        """Get all albums by a specific artist"""
+        artist = get_object_or_404(Artist, id=artist_id)
+        return Album.objects.filter(artist=artist)
