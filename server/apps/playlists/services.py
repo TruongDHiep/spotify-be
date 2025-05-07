@@ -2,11 +2,29 @@ from django.shortcuts import get_object_or_404
 from .models import Playlist
 from rest_framework.exceptions import ValidationError
 from server.utils import *
-
+from ..users.services import UserService
 import time
-
+from apps.users.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 class PlaylistService:
+    
+    @staticmethod
+    def get_all_playlists_with_usernames():
+        playlists = Playlist.objects.all()
+        result = []
+        for playlist in playlists:
+            username = UserService.get_username_by_id(playlist.user_id)
+            result.append({
+                "id": playlist.id,
+                "name": playlist.name,
+                "create_at": playlist.create_at,
+                "is_private": playlist.is_private,
+                "cover_image": playlist.cover_image,
+                "user_id": playlist.user_id,
+                "username": username
+            })
+        return result
     
     @staticmethod
     def timestate_url(url):
@@ -77,4 +95,26 @@ class PlaylistService:
         playlist.songs.remove(song_id)
         playlist.save()
         return playlist
+    
+    @staticmethod
+    def create_playlist_Admin(data):
+        """Create a new playlistAdmin"""
+        user_id = data.pop('user_id', None)
+        name_base = data.get('name', 'Playlist')
+    
+        if not user_id:
+            raise ValueError("Playlist phải có user_id.")
+    
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            raise ValueError("User không tồn tại.")
+    
+        count = Playlist.objects.filter(user=user).count()
+        data['user'] = user
+        data['name'] = f"{name_base} {count + 1}"
+    
+        playlist = Playlist.objects.create(**data)
+        return playlist
+    
     
