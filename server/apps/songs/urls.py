@@ -13,4 +13,5 @@ urlpatterns = [
     path('album/<int:album_id>/', SongsByAlbumView.as_view(), name='songs-by-album'),
     path('getallsong/', SongListView.as_view(), name='get-all-songs-playlist'),
 
+    path('artist/<int:artist_id>/', SongsByArtistView.as_view(), name='songs-by-artist'),  # Thêm dòng này
 ]

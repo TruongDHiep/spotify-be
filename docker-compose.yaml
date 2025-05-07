@@ -12,6 +12,10 @@ services:
       - db
     environment:
       - DEBUG=1
+      - DB_HOST=db # Thêm dòng này
+      - DB_NAME=spotify_db # Thêm dòng này
+      - DB_USER=spotify_user # Thêm dòng này
+      - DB_PASSWORD=spotify_pass # Thêm dòng này
     networks:
       - spotify_net
 
@@ -19,7 +23,7 @@ services:
     image: postgres:latest
     restart: always
     environment:
-      - POSTGRES_DB=spotify_db
+      - POSTGRES_DB=db
       - POSTGRES_USER=spotify_user
       - POSTGRES_PASSWORD=spotify_pass
     ports:

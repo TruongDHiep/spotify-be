@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from .models import Song
 from .serializers import SongSerializer
 from .services import SongService
+from apps.playlists.services import PlaylistService
 import json
 
 # Create your views here.
@@ -154,3 +155,19 @@ class AddSongToFavoritePlaylistView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": "An error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Thêm class view này
+class SongsByArtistView(APIView):
+    def get(self, request, artist_id):
+        """
+        Lấy tất cả bài hát của một nghệ sĩ
+        """
+        try:
+            songs = SongService.get_song_by_artist(artist_id)
+            serializer = SongSerializer(songs, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_404_NOT_FOUND
+            )
