@@ -17,7 +17,15 @@ class UserIDView(APIView):
             return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         return Response(UserUpdateSerializer(user).data)
 
-
+# Add after CustomTokenRefreshView class
+class UserLogoutView(APIView):
+    
+    def post(self, request):
+        response = Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response
+    
 class UserUpdateView(APIView):
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsSelfOrAdmin]
