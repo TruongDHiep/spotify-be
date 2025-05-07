@@ -10,13 +10,13 @@ class SongSerializer(serializers.ModelSerializer):
     file = serializers.FileField(write_only=True, required=False)
     img_upload = serializers.FileField(write_only=True, required=False)
     video_upload = serializers.FileField(write_only=True, required=False)
-    album = AlbumSerializer(read_only=True)  
+    album = AlbumSerializer(read_only=True)  # Hiển thị thông tin chi tiết của album
     album_id = serializers.PrimaryKeyRelatedField(
-        queryset=Album.objects.all(), source='album', write_only=True
+        queryset=Album.objects.all(), source='album', write_only=True  # Gửi ID của album khi tạo/cập nhật
     )
-    artist = ArtistSerializer(read_only=True)
+    artist_owner = ArtistSerializer(read_only=True)  # Hiển thị thông tin chi tiết của artist_owner
     artist_id = serializers.PrimaryKeyRelatedField(
-        queryset=Artist.objects.all(), source='artist', write_only=True
+        queryset=Artist.objects.all(), source='artist_owner', write_only=True  # Gửi ID của artist_owner khi tạo/cập nhật
     )
     
 

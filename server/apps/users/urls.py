@@ -5,7 +5,8 @@ from .views import (
     UserLoginView,
     UserIDView,
     # SocialLoginView,
-    CustomTokenRefreshView
+    CustomTokenRefreshView,
+    UserLogoutView,
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path('login/', UserLoginView.as_view(), name='user-login'),
     # path('social-login/', SocialLoginView.as_view(), name='social-login'),
     path('token/refresh/', CustomTokenRefreshView.as_view(), name='token-refresh'),
+    path('logout/', UserLogoutView.as_view(), name='user-logout'),
 ]

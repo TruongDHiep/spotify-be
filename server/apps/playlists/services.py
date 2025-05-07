@@ -17,16 +17,10 @@ class PlaylistService:
     
     @staticmethod
     def get_playlists(filters):
-        """Get playlists with optional filtering"""
-        queryset = Playlist.objects.all()
-        
-        if filters:
-            if 'id' in filters:
-                queryset = queryset.filter(user_id=filters['id'])
-            if 'is_private' in filters:
-                queryset = queryset.filter(is_public=filters['is_private'])
-                
-        return queryset
+        """
+        Lấy danh sách playlist dựa trên bộ lọc
+        """
+        return Playlist.objects.filter(**filters)
         
     @staticmethod
     def get_playlist_by_id(playlist_id):
@@ -77,4 +71,6 @@ class PlaylistService:
         playlist.songs.remove(song_id)
         playlist.save()
         return playlist
+
+
     

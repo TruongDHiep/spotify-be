@@ -19,11 +19,16 @@ class PlaylistListView(APIView):
     def get(self, request):
         """Get all playlists or filter by query params"""
         filters = {}
+        
+        # Lọc theo user_id nếu có
         if 'user_id' in request.query_params:
-            filters['id'] = request.query_params['id']
+            filters['user_id'] = request.query_params['user_id']
+        
+        # Lọc theo is_private nếu có
         if 'is_public' in request.query_params:
-            filters['is_private'] = request.query_params['is_private'].lower() == 'true'
-            
+            filters['is_private'] = request.query_params['is_public'].lower() != 'true'  # Đảo ngược logic
+        
+        # Lấy danh sách playlist dựa trên bộ lọc
         playlists = PlaylistService.get_playlists(filters)
         serializer = PlaylistSerializer(playlists, many=True)
         return Response(serializer.data)
@@ -43,7 +48,7 @@ class PlaylistListView(APIView):
             'name':"New Playlist",
             'cover_image':'https://example.com/image.jpg',
             'is_private': False,
-            'user_id': '1'
+            'user_id': request.user.id,
         }
         
         # Create playlist
@@ -51,7 +56,7 @@ class PlaylistListView(APIView):
         
         # Add to user's library (temporarily using userId=1)
         try:
-            user = User.objects.get(id=1)
+            user = User.objects.get(id=request.user.id)
             LibraryService.addToLibrary(user, 'playlist', playlist.id)
         except Exception as e:
             # Log error but don't fail the playlist creation
@@ -108,8 +113,13 @@ class PlaylistDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class PlaylistsByUserView(APIView):
-    def get(self, request, user_id):
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsSelfOrAdmin]
+    def get(self, request):
         """Lấy tất cả playlist theo user ID"""
+        user_id = request.user.id
         playlists = PlaylistService.get_playlists_by_user(user_id)
         serializer = PlaylistSerializer(playlists, many=True)
         return Response(serializer.data)
+
+
