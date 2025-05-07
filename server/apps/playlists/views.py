@@ -8,6 +8,9 @@ from apps.users.models import User
 from apps.libraries.services import LibraryService
 from apps.users.authentication import CookieJWTAuthentication
 from apps.users.permissions import IsSelfOrAdmin
+from rest_framework.pagination import PageNumberPagination
+
+
 
 import json
 
@@ -19,9 +22,6 @@ class PlaylistListView(APIView):
 
     def get(self, request):
         """Get all playlists or filter by query params"""
-        page_no = request.query_params.get('pageNo', 0)
-        page_size = request.query_params.get('pageSize', 10)
-
         filters = {}
         
         # Lọc theo user_id nếu có
@@ -30,14 +30,12 @@ class PlaylistListView(APIView):
         
         # Lọc theo is_private nếu có
         if 'is_public' in request.query_params:
-            filters['is_private'] = request.query_params['is_private'].lower() == 'true'
-
+            filters['is_private'] = request.query_params['is_public'].lower() != 'true'  # Đảo ngược logic
+        
+        # Lấy danh sách playlist dựa trên bộ lọc
         playlists = PlaylistService.get_playlists(filters)
-        paginator = PlaylistPagination()
-        result_page = paginator.paginate_queryset(playlists, request)
-        serializer = PlaylistSerializer(result_page, many=True)
-
-        return paginator.get_paginated_response(serializer.data)
+        serializer = PlaylistSerializer(playlists, many=True)
+        return Response(serializer.data)
     
     # def post(self, request):
     #     """Create a new playlist"""
