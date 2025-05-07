@@ -138,3 +138,19 @@ class SongsByAlbumView(APIView):
         songs = SongService.get_songs_by_album(album_id)
         serializer = SongSerializer(songs, many=True)
         return Response(serializer.data)
+
+# Thêm class view này
+class SongsByArtistView(APIView):
+    def get(self, request, artist_id):
+        """
+        Lấy tất cả bài hát của một nghệ sĩ
+        """
+        try:
+            songs = SongService.get_song_by_artist(artist_id)
+            serializer = SongSerializer(songs, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_404_NOT_FOUND
+            )

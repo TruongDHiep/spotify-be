@@ -11,5 +11,5 @@ urlpatterns = [
     path('page/<int:page>', SongPaginationView.as_view(), name='song-pagination'),
     path('playcount/<int:song_id>', SongPlayCountView.as_view(), name='song-playcount'),
     path('album/<int:album_id>/', SongsByAlbumView.as_view(), name='songs-by-album'),
-
+    path('artist/<int:artist_id>/', SongsByArtistView.as_view(), name='songs-by-artist'),  # Thêm dòng này
 ]
