@@ -124,6 +124,7 @@ class PlaylistsByUserView(APIView):
     def get(self, request):
         """Lấy tất cả playlist theo user ID"""
         user_id = request.user.id
+        print(user_id)
         playlists = PlaylistService.get_playlists_by_user(user_id)
         serializer = PlaylistSerializer(playlists, many=True)
         return Response(serializer.data)
