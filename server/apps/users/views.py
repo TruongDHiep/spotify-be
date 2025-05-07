@@ -136,3 +136,10 @@ class CustomTokenRefreshView(APIView):
             return Response({'error': error}, status=status.HTTP_400_BAD_REQUEST)
         
         return response
+
+class UserLogoutView(APIView):
+    def post(self, request):
+        response = Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response

@@ -4,12 +4,16 @@ from rest_framework.response import Response
 from .models import Library
 from .serializers import LibrarySerializer
 from .services import LibraryService
+from apps.users.authentication import CookieJWTAuthentication
+from apps.users.permissions import IsSelfOrAdmin
 
 
 class LibraryListView(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsSelfOrAdmin]
     def get(self, request):
         """Get Library Detail by userId"""
-        user_id = 1 
+        user_id = request.user.id
         libraries_data = LibraryService.get_libraries_detail(user_id)
         return Response(libraries_data)
 

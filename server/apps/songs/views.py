@@ -138,3 +138,19 @@ class SongsByAlbumView(APIView):
         songs = SongService.get_songs_by_album(album_id)
         serializer = SongSerializer(songs, many=True)
         return Response(serializer.data)
+    
+
+class AddSongToFavoritePlaylistView(APIView):
+    def post(self, request, song_id):
+        """Thêm bài hát vào playlist 'Bài hát yêu thích' của user"""
+        try:
+            user_id = request.user.id  # Lấy user ID từ request
+            playlist_song = PlaylistService.add_song_to_favorite_playlist(user_id, song_id)
+            return Response(
+                {"message": "Song added to 'Bài hát yêu thích' playlist successfully"},
+                status=status.HTTP_201_CREATED
+            )
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": "An error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
