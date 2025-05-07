@@ -6,3 +6,12 @@ django-cors-headers
 python-dotenv
 boto3>=1.34.0
 python-multipart
+
+# Auth & Social login
+djangorestframework-simplejwt
+dj-rest-auth
+django-allauth
+python-social-auth
+social-auth-app-django
+google-auth
+requests-oauthlib
