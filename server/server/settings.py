@@ -184,3 +184,16 @@ AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_BUCKET_NAME')
 AWS_S3_REGION_NAME = os.getenv('AWS_REGION')
 
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'apps.users.authentication.CookieJWTAuthentication',
+    ),
+    
+}
+
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'TOKEN_OBTAIN_SERIALIZER': 'apps.users.serializers.MyTokenObtainPairSerializer',
+}

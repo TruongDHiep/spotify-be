@@ -6,14 +6,16 @@ from .serializers import PlaylistSerializer
 from .services import PlaylistService
 from apps.users.models import User 
 from apps.libraries.services import LibraryService
-from rest_framework.pagination import PageNumberPagination
-from apps.songs.models import Song
+from apps.users.authentication import CookieJWTAuthentication
+from apps.users.permissions import IsSelfOrAdmin
+
 import json
 
 class PlaylistPagination(PageNumberPagination):
     page_size = 10
 class PlaylistListView(APIView):
-    pagination_class = PlaylistPagination
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsSelfOrAdmin]
 
     def get(self, request):
         """Get all playlists or filter by query params"""
@@ -45,8 +47,8 @@ class PlaylistListView(APIView):
     def post(self, request):
         """Create a new playlist and add to user library"""
         data = {
-            'name': "New Playlist",
-            'cover_image': 'https://example.com/image.jpg',
+            'name':"New Playlist",
+            'cover_image':'https://example.com/image.jpg',
             'is_private': False,
             'user_id': '1'
         }
