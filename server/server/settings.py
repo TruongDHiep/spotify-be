@@ -15,7 +15,7 @@ from io import StringIO
 from dotenv import load_dotenv
 import os
 load_dotenv()
-
+from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -195,5 +195,9 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # Thời gian hết hạn access_token
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),    # Thời gian hết hạn refresh_token
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
     'TOKEN_OBTAIN_SERIALIZER': 'apps.users.serializers.MyTokenObtainPairSerializer',
 }
