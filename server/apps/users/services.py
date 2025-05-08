@@ -10,10 +10,9 @@ import secrets
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from .serializers import UserSerializer
-
-
+  
 class UserService:
-    
+    # Giữ phương thức hiện có
     @staticmethod
     def get_all_users():
         try:
@@ -27,9 +26,6 @@ class UserService:
         timestamp = int(time.time())
         cache_busting_url = f"{url}?t={timestamp}"
         return cache_busting_url
-    
-class UserService:
-    # Giữ phương thức hiện có
     @staticmethod
     def update_user_info(user_id, validated_data):
         try:
@@ -141,7 +137,7 @@ class UserService:
     def get_username_by_id(user_id):
         try:
             user = User.objects.get(id=user_id)
-            return user.username
+            return user.name
         except ObjectDoesNotExist:
             return None
 

@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from apps.playlist_songs.models import PlaylistSong
 from apps.songs.models import Song
 from apps.songs.serializers import SongSerializer
@@ -5,7 +6,8 @@ from apps.playlist_songs.models import PlaylistSong
 from apps.playlists.models import Playlist
 from apps.songs.models import Song
 from django.shortcuts import get_object_or_404
-
+from django.db import IntegrityError
+from server.utils import *
 
 class Playlist_SongService:
 
@@ -51,3 +53,49 @@ class Playlist_SongService:
         playlist_song = get_object_or_404(PlaylistSong, playlist_id=playlist_id, song_id=song_id)
         playlist_song.delete()
         return {"message": "Song removed from playlist successfully"}
+  
+  @staticmethod
+  def add_song_to_playlist_admin(playlist_id, song_id):
+        try:
+            playlist = Playlist.objects.get(id=playlist_id)
+            song = Song.objects.get(id=song_id)
+
+            if PlaylistSong.objects.filter(playlist=playlist, song=song).exists():
+                raise ValueError("Song already exists in playlist")
+
+            playlist_song = PlaylistSong.objects.create(playlist=playlist, song=song)
+            return playlist_song
+        except Playlist.DoesNotExist:
+            raise ValueError("Playlist not found")
+        except Song.DoesNotExist:
+            raise ValueError("Song not found")
+        except Exception as e:
+            raise e
+
+  @staticmethod
+  def add_multiple_songs_to_playlist(playlist_id, song_ids):
+        try:
+            playlist = Playlist.objects.get(id=playlist_id)
+            songs = Song.objects.filter(id__in=song_ids)
+
+            if songs.count() != len(song_ids):
+                raise ValueError("Some song_ids are invalid")
+
+            existing = PlaylistSong.objects.filter(
+                playlist=playlist, song__in=songs
+            ).values_list("song_id", flat=True)
+            new_songs = [song for song in songs if song.id not in existing]
+
+            playlist_songs = [PlaylistSong(playlist=playlist, song=song) for song in new_songs]
+            PlaylistSong.objects.bulk_create(playlist_songs)
+
+            return playlist_songs
+
+        except Exception as e:
+            raise e
+
+  
+
+
+
+
