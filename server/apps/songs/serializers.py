@@ -16,6 +16,7 @@ class SongSerializer(serializers.ModelSerializer):
     )
     artist_owner = ArtistSerializer(read_only=True)  # Hiển thị thông tin chi tiết của artist_owner
     artist_id = ArtistSerializer(source='artist_owner', write_only=True)  # Gửi full thông tin của artist_owner khi tạo/cập nhật
+    artists = ArtistSerializer(many=True)  # Hiển thị và nhận full thông tin của các artist tham gia
     
     class Meta:
         model = Song
