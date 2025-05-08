@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import get_albums, get_album_detail, create_album, update_album, delete_album
+from .views import *
 
 urlpatterns = [
     path('', get_albums, name='get_albums'),
@@ -7,4 +7,5 @@ urlpatterns = [
     path('create/', create_album, name='create_album'),
     path('<int:album_id>/update/', update_album, name='update_album'),
     path('<int:album_id>/delete/', delete_album, name='delete_album'),
+    path('artist/<int:artist_id>/', get_albums_by_artist, name='get_albums_by_artist'),  # Thêm dòng này
 ]

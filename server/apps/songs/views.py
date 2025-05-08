@@ -4,9 +4,18 @@ from rest_framework.response import Response
 from .models import Song
 from .serializers import SongSerializer
 from .services import SongService
+from apps.playlists.services import PlaylistService
 import json
 
 # Create your views here.
+class SongDetailView(APIView):
+    def get(self, request, song_id):
+        """song by ID"""
+        song = SongService.get_song_by_id(song_id)
+        serializer = SongSerializer(song)
+        return Response(serializer.data)
+
+
 class SongListView(APIView):
     def get(self, request):
         """Get all song"""
@@ -124,3 +133,42 @@ class SongPaginationView(APIView):
         songs = SongService.get_song_bypage(page, page_size)
         serializer = SongSerializer(songs, many=True)
         return Response(serializer.data)
+
+class SongsByAlbumView(APIView):
+    def get(self, request, album_id):
+        """Lấy tất cả bài hát theo album ID"""
+        songs = SongService.get_songs_by_album(album_id)
+        serializer = SongSerializer(songs, many=True)
+        return Response(serializer.data)
+    
+
+class AddSongToFavoritePlaylistView(APIView):
+    def post(self, request, song_id):
+        """Thêm bài hát vào playlist 'Bài hát yêu thích' của user"""
+        try:
+            user_id = request.user.id  # Lấy user ID từ request
+            playlist_song = PlaylistService.add_song_to_favorite_playlist(user_id, song_id)
+            return Response(
+                {"message": "Song added to 'Bài hát yêu thích' playlist successfully"},
+                status=status.HTTP_201_CREATED
+            )
+        except ValueError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": "An error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Thêm class view này
+class SongsByArtistView(APIView):
+    def get(self, request, artist_id):
+        """
+        Lấy tất cả bài hát của một nghệ sĩ
+        """
+        try:
+            songs = SongService.get_song_by_artist(artist_id)
+            serializer = SongSerializer(songs, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_404_NOT_FOUND
+            )

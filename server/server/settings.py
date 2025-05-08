@@ -146,7 +146,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = [
+CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
 # Thay đổi CORS settings
@@ -174,6 +174,10 @@ CORS_ALLOW_HEADERS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
 
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_KEY')
@@ -181,3 +185,16 @@ AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_BUCKET_NAME')
 AWS_S3_REGION_NAME = os.getenv('AWS_REGION')
 
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'apps.users.authentication.CookieJWTAuthentication',
+    ),
+    
+}
+
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'TOKEN_OBTAIN_SERIALIZER': 'apps.users.serializers.MyTokenObtainPairSerializer',
+}

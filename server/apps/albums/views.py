@@ -4,6 +4,7 @@ from rest_framework import status
 from .services import AlbumService
 from .serializers import AlbumSerializer
 
+
 @api_view(['GET'])
 def get_albums(request):
     """Get a list of albums"""
@@ -41,3 +42,14 @@ def delete_album(request, album_id):
     """Delete an album"""
     AlbumService.delete_album(album_id)
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def get_albums_by_artist(request, artist_id):
+    """Get all albums by an artist"""
+    try:
+        albums = AlbumService.get_albums_by_artist(artist_id)
+        serializer = AlbumSerializer(albums, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+

@@ -2,11 +2,29 @@ from django.shortcuts import get_object_or_404
 from .models import Playlist
 from rest_framework.exceptions import ValidationError
 from server.utils import *
-
+from ..users.services import UserService
 import time
-
+from apps.users.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 class PlaylistService:
+    
+    @staticmethod
+    def get_all_playlists_with_usernames():
+        playlists = Playlist.objects.all()
+        result = []
+        for playlist in playlists:
+            username = UserService.get_username_by_id(playlist.user_id)
+            result.append({
+                "id": playlist.id,
+                "name": playlist.name,
+                "create_at": playlist.create_at,
+                "is_private": playlist.is_private,
+                "cover_image": playlist.cover_image,
+                "user_id": playlist.user_id,
+                "username": username
+            })
+        return result
     
     @staticmethod
     def timestate_url(url):
@@ -17,21 +35,22 @@ class PlaylistService:
     
     @staticmethod
     def get_playlists(filters):
-        """Get playlists with optional filtering"""
-        queryset = Playlist.objects.all()
-        
-        if filters:
-            if 'id' in filters:
-                queryset = queryset.filter(user_id=filters['id'])
-            if 'is_private' in filters:
-                queryset = queryset.filter(is_public=filters['is_private'])
-                
-        return queryset
+        """
+        Lấy danh sách playlist dựa trên bộ lọc
+        """
+        return Playlist.objects.filter(**filters)
         
     @staticmethod
     def get_playlist_by_id(playlist_id):
         """Get a specific playlist by ID"""
         return get_object_or_404(Playlist, id=playlist_id)
+    
+    @staticmethod
+    def get_playlists_by_user(user_id):
+        """
+        Lấy tất cả playlist của một user cụ thể
+        """
+        return Playlist.objects.filter(user_id=user_id)
     
     @staticmethod
     def create_playlist(data):
@@ -77,4 +96,28 @@ class PlaylistService:
         playlist.songs.remove(song_id)
         playlist.save()
         return playlist
+
+
+    
+    @staticmethod
+    def create_playlist_Admin(data):
+        """Create a new playlistAdmin"""
+        user_id = data.pop('user_id', None)
+        name_base = data.get('name', 'Playlist')
+    
+        if not user_id:
+            raise ValueError("Playlist phải có user_id.")
+    
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            raise ValueError("User không tồn tại.")
+    
+        count = Playlist.objects.filter(user=user).count()
+        data['user'] = user
+        data['name'] = f"{name_base} {count + 1}"
+    
+        playlist = Playlist.objects.create(**data)
+        return playlist
+    
     
