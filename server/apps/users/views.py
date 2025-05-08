@@ -10,6 +10,17 @@ from .authentication import CookieJWTAuthentication
 from .permissions import IsSelfOrAdmin
 from django.db import transaction
 
+
+class UserMeView(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+
+    def get(self, request):
+        try:
+            user = request.user
+            return Response(UserSerializer(user).data)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+    
 # Giữ UserUpdateView hiện tại
 class UserIDView(APIView):
     def get(self, request, id):
@@ -32,8 +43,6 @@ class UserUpdateView(APIView):
     permission_classes = [IsSelfOrAdmin]
 
     def put(self, request, id):
-        print("request ne", request)
-        print("request user", request.user.id)
         user = UserService.get_user_by_id(id)
         if not user:
             return Response({"message": "User not found"}, status=404)
@@ -113,16 +122,6 @@ class UserLoginView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class SocialLoginView(APIView):
-#     def post(self, request):
-#         provider = request.data.get('provider', '')
-#         access_token = request.data.get('access_token', '')
-        
-#         user, error = UserService.verify_and_get_social_user(provider, access_token)
-#         if error:
-#             return Response({'error': error}, status=status.HTTP_400_BAD_REQUEST)
-        
-#         return UserService.create_auth_tokens_and_response(user)
 
 class CustomTokenRefreshView(APIView):
     authentication_classes = []  # Không cần xác thực
@@ -130,6 +129,9 @@ class CustomTokenRefreshView(APIView):
         refresh_token = request.COOKIES.get('refresh_token')
         if not refresh_token:
             return Response({'error': 'No refresh token provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Thêm log để debug
+        print(f"Received refresh token: {refresh_token[:10]}...")
         
         response, error = UserService.refresh_tokens(refresh_token)
         if error:
