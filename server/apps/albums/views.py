@@ -1,55 +1,47 @@
-from rest_framework.decorators import api_view
+from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.decorators import action
 from .services import AlbumService
 from .serializers import AlbumSerializer
+from .models import Album
 
-
-@api_view(['GET'])
-def get_albums(request):
-    """Get a list of albums"""
-    albums = AlbumService.get_albums()
-    serializer = AlbumSerializer(albums, many=True)
-    return Response(serializer.data)
-
-@api_view(['GET'])
-def get_album_detail(request, album_id):
-    """Get details of a specific album"""
-    album = AlbumService.get_album_by_id(album_id)
-    serializer = AlbumSerializer(album)
-    return Response(serializer.data)
-
-@api_view(['POST'])
-def create_album(request):
-    """Create a new album"""
-    serializer = AlbumSerializer(data=request.data)
-    if serializer.is_valid():
-        album = AlbumService.create_album(serializer.validated_data)
-        return Response(AlbumSerializer(album).data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['PATCH'])
-def update_album(request, album_id):
-    """Update an existing album"""
-    serializer = AlbumSerializer(data=request.data, partial=True)
-    if serializer.is_valid():
-        album = AlbumService.update_album(album_id, serializer.validated_data)
-        return Response(AlbumSerializer(album).data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['DELETE'])
-def delete_album(request, album_id):
-    """Delete an album"""
-    AlbumService.delete_album(album_id)
-    return Response(status=status.HTTP_204_NO_CONTENT)
-
-@api_view(['GET'])
-def get_albums_by_artist(request, artist_id):
-    """Get all albums by an artist"""
-    try:
-        albums = AlbumService.get_albums_by_artist(artist_id)
-        serializer = AlbumSerializer(albums, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+class AlbumViewSet(viewsets.ModelViewSet):
+    queryset = Album.objects.all()
+    serializer_class = AlbumSerializer
+    
+    def get_queryset(self):
+        return AlbumService.get_albums()
+    
+    def retrieve(self, request, *args, **kwargs):
+        album = AlbumService.get_album_by_id(kwargs['pk'])
+        serializer = self.get_serializer(album)
+        return Response(serializer.data)
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            album = AlbumService.create_album(serializer.validated_data)
+            return Response(self.get_serializer(album).data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def update(self, request, *args, **kwargs):
+        album = AlbumService.get_album_by_id(kwargs['pk'])
+        serializer = self.get_serializer(album, data=request.data, partial=True)
+        if serializer.is_valid():
+            album = AlbumService.update_album(kwargs['pk'], serializer.validated_data)
+            return Response(self.get_serializer(album).data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self, request, *args, **kwargs):
+        AlbumService.delete_album(kwargs['pk'])
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    @action(detail=False, methods=['get'], url_path='artist/(?P<artist_id>[^/.]+)')
+    def by_artist(self, request, artist_id=None):
+        try:
+            albums = AlbumService.get_albums_by_artist(artist_id)
+            serializer = self.get_serializer(albums, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
 

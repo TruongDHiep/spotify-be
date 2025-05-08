@@ -1,11 +1,10 @@
-from django.urls import path
-from .views import *
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import AlbumViewSet
+
+router = DefaultRouter()
+router.register(r'', AlbumViewSet)
 
 urlpatterns = [
-    path('', get_albums, name='get_albums'),
-    path('<int:album_id>/', get_album_detail, name='get_album_detail'),
-    path('create/', create_album, name='create_album'),
-    path('<int:album_id>/update/', update_album, name='update_album'),
-    path('<int:album_id>/delete/', delete_album, name='delete_album'),
-    path('artist/<int:artist_id>/', get_albums_by_artist, name='get_albums_by_artist'),  # Thêm dòng này
+    path('', include(router.urls)),
 ]
