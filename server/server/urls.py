@@ -19,6 +19,7 @@ urlpatterns = [
     path('api/chats/', include('apps.chats.urls')),
     # path('api/chat/', include('apps.chat.urls')),
     path('api/payments/', include('apps.payments.urls')),
+    path('api/listening-history/', include('apps.listening_history.urls')),
     path('', home), 
 ]
     
