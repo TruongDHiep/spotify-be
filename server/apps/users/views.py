@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserUpdateSerializer, UserSerializer, UserLoginSerializer, UserRegisterSerializer
+from .serializers import UserUpdateSerializer, UserSerializer, UserLoginSerializer, UserRegisterSerializer, ChangePasswordSerializer
 from .services import UserService
 from .models import User
 from apps.playlists.services import PlaylistService
@@ -122,6 +122,32 @@ class UserLoginView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class ChangePasswordView(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsSelfOrAdmin]
+
+    def post(self, request, id):
+        user = UserService.get_user_by_id(id)
+        if not user:
+            return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        self.check_object_permissions(request, user)
+
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            old_password = serializer.validated_data["old_password"]
+            new_password = serializer.validated_data["new_password"]
+
+            user, error = UserService.change_password(user, old_password, new_password)
+            if error:
+                return Response({"error": error}, status=status.HTTP_400_BAD_REQUEST)
+
+            response = Response({"message": "Đổi mật khẩu thành công. Vui lòng đăng nhập lại."})
+            response.delete_cookie('access_token')
+            response.delete_cookie('refresh_token')
+            return response
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CustomTokenRefreshView(APIView):
     authentication_classes = []  # Không cần xác thực

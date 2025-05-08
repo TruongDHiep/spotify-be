@@ -6,7 +6,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'name', 'email', 'dob', 'avatar', 'is_premium', 'is_online', 'is_admin']
+        fields = ['id', 'name', 'gender', 'email', 'dob', 'avatar', 'is_premium', 'is_online', 'is_admin']
         read_only_fields = ['id', 'is_admin']
 
 class UserLoginSerializer(serializers.Serializer): 
@@ -39,3 +39,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['is_admin'] = user.is_admin
         # hoặc token['role'] = user.role
         return token
+    
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField()
+    new_password = serializers.CharField()

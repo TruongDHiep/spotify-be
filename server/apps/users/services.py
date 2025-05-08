@@ -126,14 +126,13 @@ class UserService:
     
     @staticmethod
     def set_auth_cookies(response, access_token, refresh_token=None):
-        # Set access token cookie (thời hạn 5 phút)
         response.set_cookie(
             key='access_token',
             value=access_token,
             httponly=True,
             secure=True,
             samesite='Lax',
-            max_age=5 * 60,  # 5 phút
+            max_age=24 * 60 * 60,  # 1 ngày
             path='/'
         )
         response.data["access"] = access_token
@@ -171,4 +170,12 @@ class UserService:
             return None, "User not found"
         except TokenError:
             return None, "Invalid refresh token"
+    
+    @staticmethod
+    def change_password(user, old_password, new_password):
+        if not check_password(old_password, user.pass_hash):
+            return None, "Mật khẩu cũ không đúng."
 
+        user.pass_hash = make_password(new_password)
+        user.save()
+        return user, None
