@@ -50,7 +50,7 @@ class PlaylistListView(APIView):
         """Create a new playlist and add to user library"""
         data = {
             'name':"New Playlist",
-            'cover_image':'https://example.com/image.jpg',
+            'cover_image':'https://daylist.spotifycdn.com/playlist-covers-mix/en/afternoon_default.jpg',
             'is_private': False,
             'user_id': request.user.id,
         }
@@ -113,10 +113,10 @@ class PlaylistDetailView(APIView):
          return Response(response_serializer.data)
         
          
-         def delete(self, request, pk):
-             """Delete a playlist"""
-             PlaylistService.delete_playlist(pk)
-             return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, pk):
+        """Delete a playlist"""
+        PlaylistService.delete_playlist(pk)
+        return Response(status=status.HTTP_204_NO_CONTENT)
         
 class PlaylistsByUserView(APIView):
     authentication_classes = [CookieJWTAuthentication]

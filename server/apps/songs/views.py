@@ -120,6 +120,7 @@ class SongPlayCountView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
+
 class SongPaginationView(APIView):
     def get(self, request, page):
         """Get songs by page"""
