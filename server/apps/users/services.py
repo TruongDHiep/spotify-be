@@ -1,8 +1,9 @@
 from .models import User
 from django.core.exceptions import ObjectDoesNotExist
+from server.utils import *
+import time
+    
 import requests
-from google.oauth2 import id_token
-from google.auth.transport import requests as google_requests
 from django.contrib.auth.hashers import make_password, check_password
 from django.conf import settings
 import secrets
@@ -10,6 +11,23 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from .serializers import UserSerializer
 
+
+class UserService:
+    
+    @staticmethod
+    def get_all_users():
+        try:
+            users = User.objects.all()  # Lấy tất cả người dùng
+            return users
+        except Exception as e:
+            return None
+        
+    @staticmethod
+    def timestate_url(url):
+        timestamp = int(time.time())
+        cache_busting_url = f"{url}?t={timestamp}"
+        return cache_busting_url
+    
 class UserService:
     # Giữ phương thức hiện có
     @staticmethod
@@ -32,6 +50,14 @@ class UserService:
         except ObjectDoesNotExist:
             return None
         return user
+    
+    @staticmethod
+    def get_username_by_id(user_id):
+        try:
+            user = User.objects.get(id=user_id)
+            return user.username
+        except ObjectDoesNotExist:
+            return None
 
     @staticmethod
     def get_user_by_email(email):

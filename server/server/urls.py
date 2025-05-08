@@ -14,6 +14,8 @@ urlpatterns = [
     path('api/songs/',include('apps.songs.urls')),
     path('api/genres/', include('apps.genres.urls')),
     path('api/libraries/', include('apps.libraries.urls')),
+    path('api/search/', include('apps.search.urls')),
     path('api/playlist_songs/', include('apps.playlist_songs.urls')),
+    path('api/payments/', include('apps.payments.urls')),
     path('', home), 
 ]
