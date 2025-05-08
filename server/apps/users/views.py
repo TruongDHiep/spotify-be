@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserUpdateSerializer, UserSerializer, UserLoginSerializer, UserRegisterSerializer
+from .serializers import UserUpdateSerializer, UserSerializer, UserLoginSerializer, UserRegisterSerializer, ChangePasswordSerializer
 from .services import UserService
 from .models import User
 from apps.playlists.services import PlaylistService
@@ -10,6 +10,17 @@ from .authentication import CookieJWTAuthentication
 from .permissions import IsSelfOrAdmin
 from django.db import transaction
 
+
+class UserMeView(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+
+    def get(self, request):
+        try:
+            user = request.user
+            return Response(UserSerializer(user).data)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
+    
 # Giữ UserUpdateView hiện tại
 class UserIDView(APIView):
     def get(self, request, id):
@@ -18,14 +29,20 @@ class UserIDView(APIView):
             return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         return Response(UserUpdateSerializer(user).data)
 
-
+# Add after CustomTokenRefreshView class
+class UserLogoutView(APIView):
+    
+    def post(self, request):
+        response = Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
+        return response
+    
 class UserUpdateView(APIView):
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsSelfOrAdmin]
 
     def put(self, request, id):
-        print("request ne", request)
-        print("request user", request.user.id)
         user = UserService.get_user_by_id(id)
         if not user:
             return Response({"message": "User not found"}, status=404)
@@ -105,16 +122,32 @@ class UserLoginView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class SocialLoginView(APIView):
-#     def post(self, request):
-#         provider = request.data.get('provider', '')
-#         access_token = request.data.get('access_token', '')
-        
-#         user, error = UserService.verify_and_get_social_user(provider, access_token)
-#         if error:
-#             return Response({'error': error}, status=status.HTTP_400_BAD_REQUEST)
-        
-#         return UserService.create_auth_tokens_and_response(user)
+class ChangePasswordView(APIView):
+    authentication_classes = [CookieJWTAuthentication]
+    permission_classes = [IsSelfOrAdmin]
+
+    def post(self, request, id):
+        user = UserService.get_user_by_id(id)
+        if not user:
+            return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        self.check_object_permissions(request, user)
+
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            old_password = serializer.validated_data["old_password"]
+            new_password = serializer.validated_data["new_password"]
+
+            user, error = UserService.change_password(user, old_password, new_password)
+            if error:
+                return Response({"error": error}, status=status.HTTP_400_BAD_REQUEST)
+
+            response = Response({"message": "Đổi mật khẩu thành công. Vui lòng đăng nhập lại."})
+            response.delete_cookie('access_token')
+            response.delete_cookie('refresh_token')
+            return response
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CustomTokenRefreshView(APIView):
     authentication_classes = []  # Không cần xác thực
@@ -123,8 +156,18 @@ class CustomTokenRefreshView(APIView):
         if not refresh_token:
             return Response({'error': 'No refresh token provided'}, status=status.HTTP_400_BAD_REQUEST)
         
+        # Thêm log để debug
+        print(f"Received refresh token: {refresh_token[:10]}...")
+        
         response, error = UserService.refresh_tokens(refresh_token)
         if error:
             return Response({'error': error}, status=status.HTTP_400_BAD_REQUEST)
         
+        return response
+
+class UserLogoutView(APIView):
+    def post(self, request):
+        response = Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
         return response

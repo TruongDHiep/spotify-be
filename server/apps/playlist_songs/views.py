@@ -35,6 +35,7 @@ class PlaylistSongsListView(APIView):
         except Exception as e:
             return Response({"error": "An error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class RemoveSongFromPlaylistView(APIView):
     def delete(self, request, playlist_id, song_id):
         """Xóa một bài hát khỏi playlist"""
         try:

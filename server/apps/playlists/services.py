@@ -34,16 +34,10 @@ class PlaylistService:
     
     @staticmethod
     def get_playlists(filters):
-        """Get playlists with optional filtering"""
-        queryset = Playlist.objects.all()
-        
-        if filters:
-            if 'id' in filters:
-                queryset = queryset.filter(user_id=filters['id'])
-            if 'is_private' in filters:
-                queryset = queryset.filter(is_public=filters['is_private'])
-                
-        return queryset
+        """
+        Lấy danh sách playlist dựa trên bộ lọc
+        """
+        return Playlist.objects.filter(**filters)
         
     @staticmethod
     def get_playlist_by_id(playlist_id):
@@ -51,14 +45,17 @@ class PlaylistService:
         return get_object_or_404(Playlist, id=playlist_id)
     
     @staticmethod
-    def create_playlist(data, img_upload=None):
+    def get_playlists_by_user(user_id):
+        """
+        Lấy tất cả playlist của một user cụ thể
+        """
+        return Playlist.objects.filter(user_id=user_id)
+    
+    @staticmethod
+    def create_playlist(data):
         """Create a new playlist"""
+        # add a number to name
         data['name'] = f"{data['name']} {Playlist.objects.filter(user_id=data['user_id']).count() + 1}"
-        
-        if img_upload:
-            img_url = upload_to_s3(img_upload, 'mnm/playlistImgs')
-            data['cover_image'] = PlaylistService.timestate_url(img_url)
-        
         playlist = Playlist.objects.create(**data)
         return playlist
     
@@ -97,6 +94,8 @@ class PlaylistService:
         playlist.songs.remove(song_id)
         playlist.save()
         return playlist
+
+
     
     @staticmethod
     def create_playlist_Admin(data, img_upload=None):

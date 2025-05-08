@@ -40,7 +40,7 @@ class SongService:
         return Song.objects.filter(genre=genre_id).distinct()
     
     @staticmethod
-    def get_top_songs(limit=10):
+    def get_top_songs(limit=12):
         """Get top songs by play count"""
         return Song.objects.order_by('-play_count')[:limit]
     
@@ -56,7 +56,7 @@ class SongService:
         """Get song by page"""
         offset = (page - 1) * pageSize #bài đầu
         limit = offset + pageSize #bài cuối
-        query_set = Song.objects.all()[offset:limit]
+        query_set = Song.objects.all().order_by('-id')[offset:limit]
         return query_set
     
     @staticmethod
