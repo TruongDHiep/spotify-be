@@ -17,8 +17,8 @@ import json
 class PlaylistPagination(PageNumberPagination):
     page_size = 10
 class PlaylistListView(APIView):
-    authentication_classes = [CookieJWTAuthentication]
-    permission_classes = [IsSelfOrAdmin]
+    # authentication_classes = [CookieJWTAuthentication]
+    # permission_classes = [IsSelfOrAdmin]
 
     def get(self, request):
         """Get all playlists or filter by query params"""
