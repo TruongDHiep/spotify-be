@@ -56,7 +56,7 @@ class PlaylistService:
     def create_playlist(data):
         """Create a new playlist"""
         # add a number to name
-        data['name'] = f"{data['name']} {Playlist.objects.filter(user_id=data['user_id']).count() + 1}"
+        data['name'] = f"{data['name']} {Playlist.objects.filter(user_id=data['user_id']).count()}"
         playlist = Playlist.objects.create(**data)
         return playlist
     
