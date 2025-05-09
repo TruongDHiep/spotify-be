@@ -12,7 +12,13 @@ from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from .serializers import UserSerializer
 
 
+
 class UserService:
+    @staticmethod
+    def timestate_url(url):
+        timestamp = int(time.time())
+        cache_busting_url = f"{url}?t={timestamp}"
+        return cache_busting_url
     
     @staticmethod
     def get_all_users():
@@ -21,22 +27,20 @@ class UserService:
             return users
         except Exception as e:
             return None
-        
-    @staticmethod
-    def timestate_url(url):
-        timestamp = int(time.time())
-        cache_busting_url = f"{url}?t={timestamp}"
-        return cache_busting_url
     
-class UserService:
-    # Giữ phương thức hiện có
     @staticmethod
-    def update_user_info(user_id, validated_data):
+    def update_user_info(user_id, validated_data, img_upload=None):
         try:
             user = User.objects.get(id=user_id)
         except ObjectDoesNotExist:
             return None
 
+        # Kiểm tra và xử lý img_upload nếu có
+        if img_upload:
+            img_url = upload_to_s3(img_upload, 'mnm/userAvatars') 
+            user.avatar = UserService.timestate_url(img_url)
+
+        # Cập nhật các trường khác từ validated_data
         for attr, value in validated_data.items():
             setattr(user, attr, value)
 

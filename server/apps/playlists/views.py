@@ -158,3 +158,49 @@ class AddNewPlaylistView(APIView):
 
         return Response({"message": "Playlist created successfully"}, status=status.HTTP_201_CREATED)
 
+class PlaylistsByUserViewAdmin(APIView):
+    def get(self, request, user_id):
+        playlists = PlaylistService.get_playlist_by_user(user_id)
+        serializer = PlaylistSerializer(playlists, many=True)
+        return Response(serializer.data)
+
+class PlaylistWithUserViewAdmin(APIView):
+    def get(self, request):
+        data = PlaylistService.get_all_playlists_with_usernames()
+        return Response(data)
+
+class AddNewPlaylistViewAdmin(APIView):
+    def post(self, request):
+        form_data = {}
+        if 'data' in request.data:
+            form_data = json.loads(request.data['data'])
+
+        name = form_data.get("name")
+        is_private = form_data.get("is_private", False)
+        user_id = form_data.get("user")
+        img_upload = request.FILES.get('img_upload')
+
+        if not name or not user_id:
+            return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        data = {
+            "name": name,
+            "is_private": is_private,
+            "user_id": user.id
+        }
+
+        playlist = PlaylistService.create_playlist_Admin(data, img_upload)
+        response_serializer = PlaylistSerializer(playlist)
+
+        return Response(response_serializer.data)
+
+class PlaylistSongsGetbyUserViewAdmin(APIView):
+    def get(self, request, user_id):
+        playlists = Playlist.objects.filter(user_id=user_id)
+        serializer = PlaylistSerializer(playlists, many=True)
+        return Response(serializer.data)

@@ -40,7 +40,6 @@ class UserLogoutView(APIView):
     
 class UserUpdateView(APIView):
     authentication_classes = [CookieJWTAuthentication]
-    permission_classes = [IsSelfOrAdmin]
 
     def put(self, request, id):
         user = UserService.get_user_by_id(id)
@@ -49,13 +48,20 @@ class UserUpdateView(APIView):
         
         self.check_object_permissions(request, user)
         
-        # Sử dụng serializer với instance
-        serializer = UserUpdateSerializer(instance=user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()  # Để serializer tự update
-            return Response(UserSerializer(user).data)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # in ra name của request
+        print(f"Request data: {request.data}")
+
+        # Lấy dữ liệu từ request
+        validated_data = request.data
+        img_upload = request.FILES.get('img_upload')  # Lấy file từ form-data
+
+        # Gọi service để cập nhật user
+        updated_user = UserService.update_user_info(id, validated_data, img_upload)
+
+        if not updated_user:
+            return Response({"message": "Failed to update user"}, status=400)
+
+        return Response(UserSerializer(updated_user).data)
 
 class UsernameByIDView(APIView):
     def get(self, request, id):
@@ -171,3 +177,4 @@ class UserLogoutView(APIView):
         response.delete_cookie('access_token')
         response.delete_cookie('refresh_token')
         return response
+
