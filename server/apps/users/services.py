@@ -175,3 +175,12 @@ class UserService:
         user.pass_hash = make_password(new_password)
         user.save()
         return user, None
+
+    @staticmethod
+    def is_premium(ispremium):
+        if ispremium:
+          User.objects.update(is_premium=True)
+          User.save()
+          return User 
+        
+        

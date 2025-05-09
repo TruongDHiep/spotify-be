@@ -121,14 +121,23 @@ class PlaylistDetailView(APIView):
 class PlaylistsByUserView(APIView):
     authentication_classes = [CookieJWTAuthentication]
     permission_classes = [IsSelfOrAdmin]
-    def get(self, request):
+    def get(self, request, user_id=None):
         """Lấy tất cả playlist theo user ID"""
         user_id = request.user.id
         print(user_id)
         playlists = PlaylistService.get_playlists_by_user(user_id)
         serializer = PlaylistSerializer(playlists, many=True)
         return Response(serializer.data)
+    
+class PlaylistsByUserViewAdmin(APIView):
+    def get(self, request, user_id):
+        """Lấy tất cả playlist theo user ID"""
+        print(f"Getting playlists for user_id={user_id}")
+        playlists = PlaylistService.get_playlists_by_user(user_id)
+        serializer = PlaylistSerializer(playlists, many=True)
+        return Response(serializer.data)
 
+    
 class PlaylistWithUserView(APIView):
     def get(self, request):
         data = PlaylistService.get_all_playlists_with_usernames()
