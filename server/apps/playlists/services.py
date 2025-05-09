@@ -32,7 +32,6 @@ class PlaylistService:
         cache_busting_url = f"{url}?t={timestamp}"
         return cache_busting_url
     
-    
     @staticmethod
     def get_playlists(filters):
         """
@@ -56,14 +55,13 @@ class PlaylistService:
     def create_playlist(data):
         """Create a new playlist"""
         # add a number to name
-        data['name'] = f"{data['name']} {Playlist.objects.filter(user_id=data['user_id']).count()}"
+        data['name'] = f"{data['name']} {Playlist.objects.filter(user_id=data['user_id']).count() + 1}"
         playlist = Playlist.objects.create(**data)
         return playlist
     
     @staticmethod
     def update_playlist(playlist_id, data, img_upload):
         """Update an existing playlist"""
-        
         playlist = get_object_or_404(Playlist, id=playlist_id)
         if img_upload:
             img_url = upload_to_s3(img_upload, 'mnm/playlistImgs')
@@ -100,7 +98,7 @@ class PlaylistService:
 
     
     @staticmethod
-    def create_playlist_Admin(data):
+    def create_playlist_Admin(data, img_upload=None):
         """Create a new playlistAdmin"""
         user_id = data.pop('user_id', None)
         name_base = data.get('name', 'Playlist')
@@ -116,8 +114,16 @@ class PlaylistService:
         count = Playlist.objects.filter(user=user).count()
         data['user'] = user
         data['name'] = f"{name_base} {count + 1}"
+
+        if img_upload:
+            img_url = upload_to_s3(img_upload, 'mnm/playlistImgs')
+            data['cover_image'] = PlaylistService.timestate_url(img_url)
     
         playlist = Playlist.objects.create(**data)
         return playlist
     
-    
+    @staticmethod
+    def get_playlist_by_user(user_id):
+        """Lấy tất cả playlist của một user"""
+        playlists = Playlist.objects.filter(user_id=user_id)
+        return playlists

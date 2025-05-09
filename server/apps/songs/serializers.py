@@ -15,8 +15,14 @@ class SongSerializer(serializers.ModelSerializer):
         queryset=Album.objects.all(), source='album', write_only=True  # Gửi ID của album khi tạo/cập nhật
     )
     artist_owner = ArtistSerializer(read_only=True)  # Hiển thị thông tin chi tiết của artist_owner
-    artist_id = ArtistSerializer(source='artist_owner', write_only=True)  # Gửi full thông tin của artist_owner khi tạo/cập nhật
-    artists = ArtistSerializer(many=True)  # Hiển thị và nhận full thông tin của các artist tham gia
+    artist_id = serializers.PrimaryKeyRelatedField(
+        queryset=Artist.objects.all(), source='artist_owner', write_only=True  # Gửi ID của artist_owner khi tạo/cập nhật
+    )
+    artists = serializers.PrimaryKeyRelatedField(
+        queryset=Artist.objects.all(), many=True, write_only=True  # Gửi danh sách ID của các artist
+    )
+    artists_detail = ArtistSerializer(many=True, read_only=True)  # Hiển thị thông tin chi tiết của các artist
+
     
     class Meta:
         model = Song
