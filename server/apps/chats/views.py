@@ -12,10 +12,12 @@ load_dotenv()
 class ChatWithDeepSeekView(APIView):
     def post(self, request):
         try:
-            user_message = request.data.get("message")
-
-            if not user_message:
-                return Response({"error": "Missing message"}, status=status.HTTP_400_BAD_REQUEST)
+            # Handle either a single message or a conversation history
+            messages = request.data.get("messages", [])
+            
+            # If no messages provided or empty messages array
+            if not messages:
+                return Response({"error": "Missing messages"}, status=status.HTTP_400_BAD_REQUEST)
 
             openrouter_api_key = os.getenv("OPENROUTER_API_KEY")
             if not openrouter_api_key:
@@ -30,21 +32,43 @@ class ChatWithDeepSeekView(APIView):
                     "X-Title": "MyChatApp",
                 },
                 data=json.dumps({
-                    "model": "deepseek/deepseek-chat-v3-0324:free",
-                    "messages": [
-                        {
-                            "role": "user",
-                            "content": user_message
-                        }
-                    ],
+                    "model": "meta-llama/llama-4-scout:free",
+                    "messages": messages,
                 })
             )
 
+            # Check if the request was successful
+            if response.status_code != 200:
+                return Response({
+                    "error": f"API request failed with status code {response.status_code}",
+                    "details": response.text
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
             result = response.json()
-            # print(result)
+            print("API Response:", json.dumps(result, indent=2))  # Log detailed response
+            
+            # Extract reply with better error handling
+            if "choices" not in result or not result["choices"]:
+                return Response({
+                    "error": "Invalid response format from API",
+                    "details": result
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                
             reply = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+            
+            if not reply:
+                return Response({
+                    "error": "Empty reply from API",
+                    "details": result
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             return Response({"reply": reply})
 
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            import traceback
+            print("Exception:", str(e))
+            print(traceback.format_exc())
+            return Response({
+                "error": str(e),
+                "traceback": traceback.format_exc()
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
