@@ -2,7 +2,7 @@ from django.db import models
 
 class Artist(models.Model):
     name = models.CharField(max_length=100)
-    avatar = models.TextField()
+    avatar = models.TextField(blank=True, null=True)
     created_at = models.DateField(auto_now_add=True)
     description = models.TextField(blank=True)
 
