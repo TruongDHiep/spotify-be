@@ -48,8 +48,7 @@ def search_artists(request):
         
     # Tìm nghệ sĩ theo tên hoặc giới thiệu
     artists = Artist.objects.filter(
-        Q(name__icontains=query) | 
-        Q(description__icontains=query)
+        Q(name__icontains=query) 
     )[:10]  # Giới hạn 10 kết quả
     
     serializer = ArtistSerializer(artists, many=True)
@@ -77,8 +76,7 @@ def search_all(request):
     )[:5]
     
     artists = Artist.objects.filter(
-        Q(name__icontains=query) | 
-        Q(description__icontains=query)
+        Q(name__icontains=query) 
     )[:5]
     
     return Response({
