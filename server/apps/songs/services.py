@@ -40,7 +40,7 @@ class SongService:
         return Song.objects.filter(genre=genre_id).distinct()
     
     @staticmethod
-    def get_top_songs(limit=12):
+    def get_top_songs(limit=10):
         """Get top songs by play count"""
         return Song.objects.order_by('-play_count')[:limit]
     
