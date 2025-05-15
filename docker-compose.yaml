@@ -23,7 +23,7 @@ services:
     image: postgres:latest
     restart: always
     environment:
-      - POSTGRES_DB=db
+      - POSTGRES_DB=spotify_db
       - POSTGRES_USER=spotify_user
       - POSTGRES_PASSWORD=spotify_pass
     ports:
