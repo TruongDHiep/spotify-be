@@ -43,9 +43,15 @@ def search_albums(request):
 @api_view(['GET'])
 def search_artists(request):
     query = request.GET.get('q', '')
-    print("Query:", query)
-    artists = Artist.objects.filter(Q(name__icontains=query))[:10]
-    print("Artists found:", [a.name for a in artists])
+    if not query:
+        return Response([], status=status.HTTP_200_OK)
+        
+    # Tìm nghệ sĩ theo tên hoặc giới thiệu
+    artists = Artist.objects.filter(
+        Q(name__icontains=query) | 
+        Q(description__icontains=query)
+    )[:10]  # Giới hạn 10 kết quả
+    
     serializer = ArtistSerializer(artists, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -71,7 +77,8 @@ def search_all(request):
     )[:5]
     
     artists = Artist.objects.filter(
-        Q(name__icontains=query) 
+        Q(name__icontains=query) | 
+        Q(description__icontains=query)
     )[:5]
     
     return Response({
