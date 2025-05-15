@@ -46,11 +46,10 @@ def search_artists(request):
     if not query:
         return Response([], status=status.HTTP_200_OK)
         
-    # Tìm nghệ sĩ theo tên hoặc giới thiệu
+    # Chỉ tìm theo tên nghệ sĩ
     artists = Artist.objects.filter(
-        Q(name__icontains=query) | 
-        Q(description__icontains=query)
-    )[:10]  # Giới hạn 10 kết quả
+        Q(name__icontains=query)
+    )[:10]
     
     serializer = ArtistSerializer(artists, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -67,18 +66,15 @@ def search_all(request):
     
     # Tìm kiếm tất cả loại đối tượng
     songs = Song.objects.filter(
-        Q(song_name__icontains=query) | 
-        Q(description__icontains=query)
+        Q(song_name__icontains=query)
     )[:5]
     
     albums = Album.objects.filter(
-        Q(title__icontains=query) | 
-        Q(description__icontains=query)
+        Q(title__icontains=query)
     )[:5]
     
     artists = Artist.objects.filter(
-        Q(name__icontains=query) | 
-        Q(description__icontains=query)
+        Q(name__icontains=query)
     )[:5]
     
     return Response({
