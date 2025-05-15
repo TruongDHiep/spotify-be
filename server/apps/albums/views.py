@@ -29,7 +29,7 @@ def create_album(request):
         return Response(AlbumSerializer(album).data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['PATCH'])
+@api_view(['PUT'])
 def update_album(request, album_id):
     """Update an existing album"""
     serializer = AlbumSerializer(data=request.data, partial=True)

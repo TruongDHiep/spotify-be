@@ -28,7 +28,7 @@ def create_artist(request):
         return Response(ArtistSerializer(artist).data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['PATCH'])
+@api_view(['PUT'])
 def update_artist(request, artist_id):
     """Update an existing artist"""
     serializer = ArtistSerializer(data=request.data, partial=True)
