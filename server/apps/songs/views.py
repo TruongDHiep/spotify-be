@@ -74,7 +74,7 @@ class SongListView(APIView):
             # Lấy files từ request nếu có
             file_upload = request.FILES.get('file')
             img_upload = request.FILES.get('img_upload')
-            mv_upload = request.FILES.get('mv')
+            mv_upload = request.FILES.get('video_upload')
 
             # Gọi service để update bài hát với artists_data riêng
             song = SongService.update_song(

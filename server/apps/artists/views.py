@@ -23,16 +23,18 @@ def create_artist(request):
     """Create a new artist"""
     serializer = ArtistSerializer(data=request.data)
     if serializer.is_valid():
-        artist = ArtistService.create_artist(serializer.validated_data)
+        img_upload = request.FILES.get('img_upload')
+        artist = ArtistService.create_artist(serializer.validated_data, img_upload)
         return Response(ArtistSerializer(artist).data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['PATCH'])
+@api_view(['PUT'])
 def update_artist(request, artist_id):
     """Update an existing artist"""
     serializer = ArtistSerializer(data=request.data, partial=True)
     if serializer.is_valid():
-        artist = ArtistService.update_artist(artist_id, serializer.validated_data)
+        img_upload = request.FILES.get('img_upload')
+        artist = ArtistService.update_artist(artist_id, serializer.validated_data, img_upload)
         return Response(ArtistSerializer(artist).data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -24,16 +24,18 @@ def create_album(request):
     """Create a new album"""
     serializer = AlbumSerializer(data=request.data)
     if serializer.is_valid():
-        album = AlbumService.create_album(serializer.validated_data)
+        img_upload = request.FILES.get('img_upload')
+        album = AlbumService.create_album(serializer.validated_data, img_upload)
         return Response(AlbumSerializer(album).data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['PATCH'])
+@api_view(['PUT'])
 def update_album(request, album_id):
     """Update an existing album"""
     serializer = AlbumSerializer(data=request.data, partial=True)
     if serializer.is_valid():
-        album = AlbumService.update_album(album_id, serializer.validated_data)
+        img_upload = request.FILES.get('img_upload')
+        album = AlbumService.update_album(album_id, serializer.validated_data, img_upload)
         return Response(AlbumSerializer(album).data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

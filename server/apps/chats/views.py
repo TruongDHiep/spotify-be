@@ -14,7 +14,7 @@ class ChatWithDeepSeekView(APIView):
         try:
             # Handle either a single message or a conversation history
             messages = request.data.get("messages", [])
-            
+
             # If no messages provided or empty messages array
             if not messages:
                 return Response({"error": "Missing messages"}, status=status.HTTP_400_BAD_REQUEST)
@@ -34,6 +34,8 @@ class ChatWithDeepSeekView(APIView):
                 data=json.dumps({
                     "model": "meta-llama/llama-4-scout:free",
                     "messages": messages,
+                    "max_tokens": 1000,  # Giới hạn độ dài response
+                    "temperature": 0.7,  # Điều chỉnh độ sáng tạo của response
                 })
             )
 
