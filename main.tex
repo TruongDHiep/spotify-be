@@ -1,0 +1,513 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{vietnam}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{lastpage}
+\usepackage[top=3cm, bottom=3cm, left=3cm, right=2.5cm]{geometry}
+\usepackage{times}
+\usepackage{float}
+\usepackage{mathptmx}
+
+% Thiết lập footer mặc định
+
+%\usepackage{fancyhdr}
+\setlength{\headheight}{40pt}
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[L]{
+ \begin{tabular}{rl}
+    \begin{picture}(25,15)(0,0)
+    \put(0,-8){\includegraphics[width=8mm, height=8mm]{logoITSGUsmall.png}}
+    %\put(0,-8){\epsfig{width=10mm,figure=hcmut.eps}}
+   \end{picture}&
+	%\includegraphics[width=8mm, height=8mm]{hcmut.png} & %
+	\begin{tabular}{l}
+		\textbf{\bf \ttfamily Trường Đại học Sài Gòn}\\
+		\textbf{\bf \ttfamily Khoa Công Nghệ Thông Tin}
+	\end{tabular} 	
+ \end{tabular}
+}
+\fancyhead[R]{
+	\begin{tabular}{l}
+		\tiny \bf \\
+		\tiny \bf 
+	\end{tabular}  }
+\fancyfoot{} % clear all footer fields
+\fancyfoot[L]{\scriptsize \ttfamily Bài tập lớn môn Phát triển phần mềm mã nguồn mở - Năm học 2024-2025}
+\fancyfoot[R]{\scriptsize \ttfamily Trang {\thepage}/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+% Thiết lập header có logo
+\fancyhead[L]{
+ \begin{tabular}{rl}
+    \begin{picture}(25,15)(0,0)
+    \put(0,-8){\includegraphics[width=8mm, height=8mm]{img/logoITSGUsmall.png}}
+    %\put(0,-8){\epsfig{width=10mm,figure=hcmut.eps}}
+   \end{picture}&
+	%\includegraphics[width=8mm, height=8mm]{hcmut.png} & %
+	\begin{tabular}{l}
+		\textbf{\bf \ttfamily Trường Đại học Sài Gòn}\\
+		\textbf{\bf \ttfamily Khoa Công Nghệ Thông Tin}
+	\end{tabular} 	
+ \end{tabular}
+}
+
+% Tạo trang bìa không có header/footer
+\begin{document}
+\thispagestyle{empty}
+
+\begin{center}
+    \textbf{TRƯỜNG ĐẠI HỌC SÀI GÒN}\\[0.2cm]
+    \textbf{KHOA CÔNG NGHỆ THÔNG TIN}\\[1.5cm]
+
+    \includegraphics[width=4cm]{img/logo.png}\\[1.5cm]
+
+    \textbf{\Large BÁO CÁO BÀI TẬP LỚN}\\[0.5cm]
+    \rule{10cm}{0.5pt}\\[0.5cm]
+    \textbf{\LARGE Website nghe nhạc trực tuyến}\\[2cm]
+\end{center}
+
+\vspace{1cm}
+
+\begin{flushright}
+\begin{tabular}{@{}l@{\hspace{0.7cm}}l}
+    \textbf{Giảng viên hướng dẫn:} & Từ Lãng Phiêu \\
+    \\[-0.3cm]
+    \textbf{Sinh viên thực hiện:} & Lê Tấn Tài - 3121410431 \\
+                                  & Trương Đại Hiệp - 3121410431 \\
+                                  & Phạm Trung Hiếu - 3121410431 \\
+                                  & Tô Minh Triết - 3121410431 \\
+                                  & Phan Chí Bảo - 3121410431 \\
+\end{tabular}
+\end{flushright}
+
+\vfill
+
+\begin{center}
+    \textbf{TP. Hồ Chí Minh, tháng 5 năm 2025}
+\end{center}
+
+\newpage
+
+% Bắt đầu hiển thị header/footer từ đây
+\tableofcontents
+\newpage
+
+% ------------------ NỘI DUNG ------------------
+\section{Giới thiệu}
+
+\subsection{Phạm vi dự án}
+Dự án ``Website nghe nhạc trực tuyến'' được xây dựng với mục tiêu cung cấp một nền tảng giúp người dùng có thể truy cập, tìm kiếm và nghe nhạc mọi lúc mọi nơi thông qua kết nối Internet. Phạm vi của dự án bao gồm:
+
+\begin{itemize}
+	\item Hướng đến những người yêu thích âm nhạc, sử dụng nhạc vào mục đích giải trí hoặc tạo động lực trong công việc.
+    \item Xây dựng giao diện người dùng thân thiện, dễ sử dụng trên trình duyệt web.
+    \item Cho phép người dùng đăng ký, đăng nhập, quản lý tài khoản cá nhân, quản lý danh sách phát và các bài hát yêu thích.
+    \item Phát nhạc trực tuyến từ cơ sở dữ liệu nhạc đã lưu trữ.
+    \item Hỗ trợ tạo và quản lý playlist cá nhân.
+    \item Tìm kiếm bài hát, nghệ sĩ và album.
+    \item Giao diện quản trị dành cho admin để quản lý nội dung nhạc và các nội dung liên quan.
+\end{itemize}
+
+\subsection{Mục tiêu}
+Dự án hướng tới các mục tiêu cụ thể sau:
+
+\begin{itemize}
+    \item Xây dựng một hệ thống nghe nhạc trực tuyến hoạt động ổn định và hiệu quả.
+    \item Cung cấp trải nghiệm người dùng tốt, dễ dàng thao tác với giao diện web.
+    \item Tối ưu hóa hiệu năng phát nhạc và truy vấn dữ liệu.
+    \item Đảm bảo tính bảo mật cho tài khoản người dùng và dữ liệu hệ thống.
+    \item Ứng dụng và tìm hiểu các công nghệ hiện đại trong thiết kế web và quản lý backend như Django, ReactJS, PostgreSQL, Docker, v.v.
+\end{itemize}
+
+\newpage
+\section{Chức năng và các công nghệ chính}
+
+\subsection{Công nghệ phát triển}
+\subsubsection{Frontend}
+\textbf{- ReactJS}: ReactJS là một thư viện JavaScript được phát triển bởi Facebook, dùng để xây dựng giao diện người dùng, đặc biệt là cho các ứng dụng web đơn trang (SPA). React hoạt động dựa trên mô hình component – chia nhỏ giao diện thành các thành phần độc lập và có thể tái sử dụng. Một điểm nổi bật của React là sử dụng JSX, cho phép viết HTML trong JavaScript, giúp mã dễ đọc và dễ viết hơn. Ngoài ra, React còn sử dụng Virtual DOM để tối ưu hiệu suất, chỉ cập nhật những phần giao diện thay đổi thay vì tải lại toàn bộ trang. Với cách tổ chức logic rõ ràng và hiệu quả, React trở thành một công cụ phổ biến trong phát triển web hiện đại. \\  
+\textbf{- Redux}: Redux là một thư viện quản lý trạng thái (state management) cho các ứng dụng JavaScript, thường được sử dụng cùng với React. Redux giúp lưu trữ và quản lý trạng thái của toàn bộ ứng dụng tại một nơi duy nhất gọi là store, giúp việc truyền dữ liệu giữa các component trở nên dễ dàng và có tổ chức hơn. Dữ liệu trong Redux chỉ có thể được thay đổi thông qua action và reducer, giúp đảm bảo tính nhất quán và dễ kiểm soát khi ứng dụng phức tạp.\\ 
+\textbf{- TailwindCSS}: Tailwind CSS là một framework CSS tiện ích (utility-first) giúp bạn xây dựng giao diện nhanh chóng bằng cách sử dụng các lớp (class) có sẵn. Thay vì viết CSS riêng cho từng thành phần, bạn chỉ cần áp dụng trực tiếp các class vào HTML để định dạng kiểu dáng, ví dụ như p-4, text-center, bg-blue-500. Tailwind giúp tăng tốc độ phát triển giao diện, dễ tùy chỉnh và giữ cho mã nguồn gọn gàng, nhất là trong các dự án front-end hiện đại. \\  
+\textbf{- Ant Design}: Ant Design (gọi tắt là AntD) là một thư viện giao diện người dùng (UI library) dành cho React, được phát triển bởi Ant Group. Ant Design cung cấp một bộ thành phần phong phú, đẹp mắt và chuyên nghiệp như button, table, form, modal,... giúp lập trình viên xây dựng giao diện nhanh chóng, nhất quán và thân thiện với người dùng. Với thiết kế theo hệ thống Design System chuẩn, AntD rất phù hợp cho các ứng dụng web doanh nghiệp (enterprise-level applications).  
+\subsubsection{Backend} \\
+ \textbf{- Django}:  Django là một framework Python cấp cao, được thiết kế để phát triển các ứng dụng web một cách nhanh chóng và hiệu quả. Django nổi bật với triết lý “DRY” (Don’t Repeat Yourself) và cấu trúc rõ ràng, giúp lập trình viên tập trung vào logic nghiệp vụ thay vì viết lại những đoạn mã lặp đi lặp lại. Django thường được sử dụng để xử lý logic ứng dụng, xây dựng các API RESTful thông qua các thư viện như Django REST Framework, và quản lý dữ liệu thông qua hệ thống ORM mạnh mẽ. Ngoài ra, Django còn hỗ trợ sẵn nhiều tính năng như xác thực người dùng, phân quyền, bảo mật CSRF/XSS, giúp việc phát triển ứng dụng web trở nên nhanh chóng, an toàn và dễ mở rộng.\\ \\ 
+ \textbf{- RESTful API}: RESTful API là một kiểu thiết kế giao diện lập trình ứng dụng (API) tuân theo các nguyên tắc của kiến trúc REST (Representational State Transfer), sử dụng giao thức HTTP để giao tiếp giữa client và server. RESTful API tổ chức dữ liệu và chức năng theo tài nguyên (resources), mỗi tài nguyên được định danh bằng một URL duy nhất và được thao tác thông qua các phương thức HTTP phổ biến như GET (lấy dữ liệu), POST (tạo mới), PUT/PATCH (cập nhật), DELETE (xóa). Dữ liệu thường được truyền ở định dạng JSON hoặc XML. RESTful API đơn giản, dễ hiểu, dễ mở rộng, phù hợp với các ứng dụng web và mobile hiện đại nhờ tính phân tách rõ ràng giữa frontend và backend. RESTful cũng dễ tích hợp với nhiều ngôn ngữ lập trình và nền tảng khác nhau, là lựa chọn phổ biến trong các hệ thống microservices hoặc kiến trúc client-server.\\  
+\subsubsection{Cơ sở dữ liệu và lưu trữ tệp tin}
+\textbf{- PostgreSQL}: PostgreSQL là một hệ quản trị cơ sở dữ liệu quan hệ mã nguồn mở mạnh mẽ, được đánh giá cao nhờ khả năng xử lý dữ liệu phức tạp và tính ổn định cao. PostgreSQL hỗ trợ đầy đủ các chuẩn SQL, cung cấp nhiều tính năng nâng cao như truy vấn phức tạp, chỉ mục đa dạng, trigger, stored procedures và cả các kiểu dữ liệu tùy chỉnh. Ngoài ra, nó còn hỗ trợ tốt cho việc mở rộng quy mô với khả năng mở rộng theo chiều ngang và chiều dọc, tích hợp tốt với các ứng dụng lớn và hệ thống yêu cầu hiệu suất cao. Đây là lựa chọn phổ biến trong các hệ thống cần độ tin cậy cao và khả năng xử lý dữ liệu lớn.   \\ \\
+\textbf{- AWS S3} :Amazon Web Services (AWS) là một nền tảng dịch vụ đám mây linh hoạt và phổ biến, cung cấp nhiều dịch vụ hỗ trợ phát triển và vận hành hệ thống. Trong dự án này, AWS được sử dụng chủ yếu để lưu trữ dữ liệu tĩnh (chẳng hạn như hình ảnh, tệp âm thanh hoặc video) thông qua dịch vụ AWS S3 (Simple Storage Service). Việc sử dụng AWS S3 giúp đảm bảo tính sẵn sàng cao, khả năng truy xuất hiệu quả và khả năng mở rộng linh hoạt khi khối lượng dữ liệu tăng lên. Đây là giải pháp lưu trữ đáng tin cậy, phù hợp với các hệ thống hiện đại yêu cầu hiệu suất và độ ổn định cao.
+  \\ 
+\subsubsection{Quản lý và triển khai mã nguồn}
+\textbf{- Git}: Git là một hệ thống quản lý phiên bản phân tán phổ biến, cho phép nhiều lập trình viên cùng làm việc trên một dự án mà không lo bị xung đột mã nguồn. Git giúp theo dõi lịch sử thay đổi, quản lý các nhánh phát triển (branches), và dễ dàng hợp nhất mã (merge) từ nhiều nguồn khác nhau. Các nền tảng như GitHub, GitLab hay Bitbucket kết hợp với Git giúp tổ chức làm việc nhóm, review mã, và triển khai CI/CD hiệu quả hơn.\\ \\
+\textbf{- Docker}: Docker là một nền tảng mã nguồn mở giúp đóng gói ứng dụng cùng toàn bộ môi trường chạy (dependencies, thư viện, cấu hình,...) thành một container. Điều này giúp đảm bảo ứng dụng có thể chạy nhất quán ở mọi môi trường – từ máy phát triển, máy chủ staging đến production. Docker giúp đơn giản hoá quá trình triển khai, mở rộng và bảo trì hệ thống, đặc biệt hiệu quả trong mô hình kiến trúc microservices.\\ \\
+\textbf{- Vercel}: Vercel là một nền tảng triển khai ứng dụng web hiện đại, chủ yếu dành cho frontend (đặc biệt là với các framework như React, Next.js). Vercel hỗ trợ triển khai tự động chỉ với vài cú nhấp chuột khi kết nối với GitHub, giúp lập trình viên tập trung phát triển sản phẩm mà không cần lo về cấu hình hạ tầng. Với tính năng CI/CD tích hợp sẵn, mỗi lần đẩy mã mới lên Git, Vercel sẽ tự động build và cập nhật phiên bản mới của website.\\ \\
+\textbf{- AWS EC2}: Amazon EC2 (Elastic Compute Cloud) là dịch vụ máy chủ ảo (VPS) thuộc Amazon Web Services, cho phép người dùng tạo và quản lý các máy chủ linh hoạt trên nền tảng điện toán đám mây. EC2 hỗ trợ nhiều hệ điều hành, cấu hình phần cứng tùy chỉnh và tích hợp dễ dàng với các dịch vụ khác của AWS. Đây là lựa chọn phổ biến khi cần triển khai backend, database hoặc các ứng dụng phức tạp yêu cầu kiểm soát cao về hiệu năng và bảo mật.\\
+\subsubsection{Xác thực và thanh toán}
+\textbf{- JWT}: JWT (JSON Web Token) là một phương pháp xác thực người dùng phổ biến trong các ứng dụng web hiện đại. JWT hoạt động dựa trên cơ chế tạo ra một chuỗi token chứa thông tin đã mã hoá, được ký bằng khoá bí mật. Sau khi người dùng đăng nhập thành công, server sẽ gửi về token này, và client sử dụng nó trong các yêu cầu tiếp theo để chứng minh danh tính. JWT giúp loại bỏ sự phụ thuộc vào session lưu trên server, tăng tính linh hoạt và khả năng mở rộng cho hệ thống.\\ \\
+\textbf{- VNPAY}: VNPAY là một cổng thanh toán điện tử phổ biến tại Việt Nam, cho phép tích hợp nhiều phương thức thanh toán như thẻ ngân hàng, ví điện tử, QR Pay,... vào hệ thống. Việc tích hợp VNPAY vào ứng dụng web hoặc mobile giúp người dùng thực hiện giao dịch một cách nhanh chóng, bảo mật và tiện lợi. VNPAY cung cấp API rõ ràng, tài liệu chi tiết và hỗ trợ nhiều cơ chế xác thực để đảm bảo an toàn trong quá trình thanh toán.
+\subsection{Các chức năng chính}
+\subsubsection{Đăng nhập/Đăng kí}
+\begin{itemize}
+    \item\textbf{Đăng ký tài khoản}: Người dùng có thể đăng ký tài khoản mới bằng email, mật khẩu và khi đăng ký thành công mật khẩu sẽ được mã hoá để lưu trữ nhằm nâng cao tính bảo mật 
+    \item \textbf{Đăng nhập}: Hỗ trợ đăng nhập bằng email và mật khẩu  
+    \item \textbf{Quản lý phiên đăng nhập}:Mỗi phiên đăng nhập đều yêu cầu người dùng phải đăng nhập lại và có kiểm tra quyền của tài khoản để điều hướng đến giao diện tương ứng.
+\end{itemize}
+\subsubsection{Phát nhạc/video trực tuyến}
+\begin{itemize}
+    \item \textbf{Phát nhạc}: Phát bài hát đơn ngoài trang chủ hoặc phát các bài hát trong playlist yêu thích, album, lịch sử nghe,.. Một các trực tuyến.
+    \item \textbf{"Phát video"}: Phát video âm nhạc với các bài hát có mv.
+\end{itemize}
+\subsubsection{Tìm kiếm}
+\begin{itemize}
+    \item \textbf{Tìm kiếm đa nội dung}: Tìm kiếm bài hát, album, nghệ sĩ
+\end{itemize}
+\subsubsection{Xem/sửa thông tin người dùng}
+\begin{itemize}
+    \item \textbf{Thông tin cá nhân}: Xem và chỉnh sửa tên, email, ngày sinh, ảnh đại diện
+    \item \textbf{Thay đổi mật khẩu}: Cập nhật mật khẩu với xác thực mật khẩu cũ
+\end{itemize}
+\subsubsection{Đăng ký premium, thanh toán MOMO}
+\begin{itemize}
+    \item \textbf{Trang Nhập thông tin thanh toán}: Hiển thị form điền thông tin tài khoản ngân hàng thanh toán.
+    \item \textbf{Trang nhập OTP}: Sau khi điền thông tin thanh toán xong sẽ nhập OTP để xác thực.
+    \item \textbf{Trang thông báo thành công}: Sau khi nhập OTP chính xác sẽ chuyển về trang thông báo thanh toán thành công cửa web.
+\end{itemize}
+\subsubsection{Xem chi tiết Song, Album, Artist, User}
+\begin{itemize}
+    \item \textbf{Trang chi tiết bài hát}: Hiển thị thông tin bài hát, lời bài hát, thông tin nhạc sĩ
+    \item \textbf{Trang album}: Hiển thị danh sách bài hát, thông tin album, năm phát hành, ảnh bìa.
+    \item \textbf{Trang nghệ sĩ}: Tiểu sử nghệ sĩ, các bài hát/album nổi bật
+    \item \textbf{Hồ sơ người dùng}: Xem playlist công khai, nghệ sĩ yêu thích.
+\end{itemize}
+\subsubsection{Tạo danh sách và quản lý các bài hát yêu thích}
+\begin{itemize}
+\item \textbf{Playlist yêu thích}: Danh sách yêu thích mặc định tạo khi người dùng tạo tài khoản.
+\item \textbf{Tạo và quản lý playlist mới}: Tạo mới danh sách phát, quản lý thông tin (avatar, tên,..), xóa danh sách phát, thêm các bài hát yêu thích vào danh sách phát.
+\end{itemize}
+\subsubsection{Tải nhạc, video}
+\begin{itemize}
+    \item \textbf{Tải xuống bài hát, video}: Tải file bài hát hoặc video với các tài khoản user có đăng kí premium.
+\end{itemize}
+\subsubsection{Chatbot Deepseek}
+\begin{itemize}
+    \item  \textbf{ChatBox}: Icon chatbox nhỏ bên phải với trợ lý ảo DeepSeek.
+\end{itemize}
+\subsection{Chức năng Admin}
+\subsubsection{Quản lý bài hát}
+\begin{itemize}
+    \item \textbf{Quản lý bài hát}: Tạo, chỉnh sửa thông tin, upload file, video bài hát.
+\end{itemize}
+\subsubsection{Quản lý nghệ sĩ}
+\begin{itemize}
+    \item \textbf{Quản lý}: Tạo, chỉnh sửa thông tin nghệ sĩ.
+\end{itemize}
+\subsubsection{Quản lý album}
+\begin{itemize}
+    \item \textbf{Quản lý}: Tạo, chỉnh sửa thông tin album.
+\end{itemize}
+\subsubsection{Quản lý danh sách phát}
+\begin{itemize}
+    \item  \textbf{Tạo playlist}: Tạo mới và tùy chỉnh danh sách phát (tên, mô tả, ảnh bìa).
+    \item  \textbf{Thêm sửa xoá các bài hát trong playlist}: Quản lý bài hát trong playlist
+    \item  \textbf{Chế độ riêng tư}: Cài đặt playlist ở chế độ công khai hoặc riêng tư.
+\end{itemize}
+\newpage
+\section{Mô tả và giao diện}
+\subsection{Giao diện Admin}
+\subsubsection{Giao diện danh sách các bài hát}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/admin_songs.png}
+  \caption{Giao diện danh sách các bài hát}
+  \label{fig:admin-interface}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/admin_createSong.png}
+  \caption{Giao diện thêm bài hát mới}
+  \label{fig:admin-interface}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/admin_updateSong.png}
+  \caption{Giao diện cập nhật bài hát tuỳ chọn}
+  \label{fig:admin-interface}
+\end{figure}
+\subsubsection{Giao diện danh sách nghệ sĩ}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/admin_artists.png}
+  \caption{Giao diện danh sách nghệ sĩ}
+  \label{fig:admin-interface}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/admin_createArtist.png}
+  \caption{Giao diện thêm nghệ sĩ mới}
+  \label{fig:admin-interface}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/admin_updateArtist.png}
+  \caption{Giao diện cập nhật nghệ sĩ tuỳ chọn}
+  \label{fig:admin-interface}
+\end{figure}
+\subsubsection{Giao diện danh sách album}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/admin_albums.png}
+  \caption{Giao diện danh sách album}
+  \label{fig:admin-interface}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/admin_createAlbum.png}
+  \caption{Giao diện thêm album mới}
+  \label{fig:admin-interface}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/admin_updateAlbum.png}
+  \caption{Giao diện cập nhật album tuỳ chọn}
+  \label{fig:admin-interface}
+\end{figure}
+\subsubsection{Giao diện khi danh sách nhạc}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/admin_updateAlbum.png}
+  \caption{Giao diện cập nhật album tuỳ chọn}
+  \label{fig:admin-interface}
+\end{figure}
+\subsection{Giao diện Người dùng}
+\newpage
+
+\subsubsection{Giao diện khi chưa đăng nhập}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/chualogin.jpg}
+  \caption{Giao diện khi chưa đăng nhập: Hiển thị trang chính với các chức năng hạn chế, yêu cầu người dùng đăng nhập để sử dụng đầy đủ.}
+  \label{fig:chualogin}
+\end{figure}
+
+\subsubsection{Giao diện đăng nhập}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/dangnhap.jpg}
+  \caption{Giao diện đăng nhập: Người dùng nhập tài khoản và mật khẩu để truy cập hệ thống.}
+  \label{fig:dangnhap}
+\end{figure}
+
+\subsubsection{Giao diện đăng ký}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/dangki.jpg}
+  \caption{Giao diện đăng ký: Người dùng nhập gmail để đăng ký.}
+  \label{fig:dangki}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/nhapmatkhau.jpg}
+  \caption{Giao diện nhập mật khẩu: Bước xác minh mật khẩu để hoàn tất đăng ký.}
+  \label{fig:nhapmatkhau}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/dienthongtin.jpg}
+  \caption{Giao diện điền thông tin: Người dùng cung cấp thêm thông tin cá nhân cho hồ sơ.}
+  \label{fig:dienthongtin}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/dangkithanhcong.jpg}
+  \caption{Giao diện đăng ký thành công: Thông báo hoàn tất quá trình đăng ký.}
+  \label{fig:dangkithanhcong}
+\end{figure}
+
+\subsubsection{Giao diện khi đăng nhập thành công}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/giaodiendadangnhap.jpg}
+  \caption{Giao diện sau khi đăng nhập thành công: Truy cập đầy đủ chức năng hệ thống.}
+  \label{fig:giaodiendadangnhap}
+\end{figure}
+
+\subsubsection{Giao diện hồ sơ người dùng}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/hosonguoidung.jpg}
+  \caption{Giao diện hồ sơ người dùng: Hiển thị thông tin cá nhân và tùy chọn quản lý tài khoản.}
+  \label{fig:hosonguoidung}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/lichsunghe.jpg}
+  \caption{Giao diện lịch sử nghe: Liệt kê các bài hát đã nghe gần đây.}
+  \label{fig:lichsunghe}
+\end{figure}
+
+\subsubsection{Giao diện cài đặt người dùng}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/nguoidung.jpg}
+  \caption{Giao diện cài đặt người dùng: Quản lý cài đặt tài khoản và quyền riêng tư.}
+  \label{fig:nguoidung}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/chinhsuauser.jpg}
+  \caption{Giao diện chỉnh sửa thông tin người dùng: Thay đổi thông tin cá nhân.}
+  \label{fig:chinhsuauser}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/thaydoimatkhau.jpg}
+  \caption{Giao diện đổi mật khẩu người dùng: Đặt lại mật khẩu để bảo vệ tài khoản.}
+  \label{fig:thaydoimatkhau}
+\end{figure}
+
+\subsubsection{Giao diện mua gói premium}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/muagoi.jpg}
+  \caption{Giao diện mua gói premium: Lựa chọn các gói nâng cao để sử dụng các chức năng tải nhạc, nghe nhạc không có quảng cáo.}
+  \label{fig:muagoi}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/thanhtoan.jpg}
+  \caption{Giao diện thanh toán: Thực hiện giao dịch để kích hoạt gói premium.}
+  \label{fig:thanhtoan}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/OTP.jpg}
+  \caption{Giao diện nhập OTP: Xác thực giao dịch bằng mã OTP gửi về điện thoại.}
+  \label{fig:otp}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/paymentsucces.jpg}
+  \caption{Giao diện thanh toán thành công: Thông báo thanh toán hoàn tất.}
+  \label{fig:paymentsucces}
+\end{figure}
+
+\subsubsection{Giao diện playlist}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/playlist.jpg}
+  \caption{Giao diện playlist: Hiển thị danh sách các playlist đã tạo.}
+  \label{fig:playlist}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/suaplaylist.jpg}
+  \caption{Giao diện sửa playlist: Tùy chỉnh tên hoặc xóa các bài hát trong playlist.}
+  \label{fig:suaplaylist}
+\end{figure}
+
+\subsubsection{Giao diện thêm nhạc vào playlist}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/thembaihatvaoplaylist.jpg}
+  \caption{Giao diện thêm bài hát vào playlist: Chọn bài hát để thêm vào danh sách.}
+  \label{fig:thembaihatvaoplaylis}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/chonplaylist.jpg}
+  \caption{Giao diện chọn playlist: Chọn playlist cụ thể để thêm bài hát.}
+  \label{fig:chonplaylist}
+\end{figure}
+
+\subsubsection{Giao diện chatbox}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/chatbox.jpg}
+  \caption{Giao diện chatbox: Giao tiếp và trao đổi giữa người dùng với nhau.}
+  \label{fig:chatbox}
+\end{figure}
+
+\subsubsection{Giao diện xem video}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/xemviedeo.jpg}
+  \caption{Giao diện xem video: Trình phát video tích hợp trong hệ thống.}
+  \label{fig:xemvideo}
+\end{figure}
+
+\newpage
+
+
+\newpage
+\section{Tổng kết}
+\subsection{Thành tựu}
+Sau quá trình thiết kế và triển khai, hệ thống đã đạt được một số thành tựu đáng ghi nhận như sau:
+\begin{itemize}
+    \item Hoàn thiện và tích hợp thành công hệ thống backend và frontend, đảm bảo quá trình xử lý API diễn ra hiệu quả, an toàn và có khả năng mở rộng. Các chức năng chính như nghe nhạc trực tuyến, quản lý danh sách bài hát, quản lý người dùng và playlist hoạt động ổn định, đáp ứng đúng yêu cầu đề ra.
+    
+    \item Xây dựng giao diện người dùng hiện đại và thân thiện với trải nghiệm người dùng, được phát triển bằng \textbf{ReactJS} kết hợp với \textbf{Tailwind CSS}, giúp tối ưu hiệu suất tải trang, bố cục trực quan.
+    
+    \item Hệ thống lưu trữ dữ liệu tĩnh như hình ảnh, âm thanh được triển khai thông qua \textbf{AWS S3}, giúp tăng tính sẵn sàng, giảm tải cho server chính và nâng cao hiệu quả truy xuất dữ liệu.
+    
+    \item Áp dụng \textbf{PostgreSQL} làm hệ quản trị cơ sở dữ liệu, đảm bảo tính toàn vẹn và hiệu suất truy vấn cao trong quá trình lưu trữ và xử lý thông tin liên quan đến bài hát, người dùng và các hoạt động tương tác.
+    
+\end{itemize}
+
+\subsection{Hạn chế}
+Tuy vậy vẫn còn các điểm hạn chế trong dự án lần này kể đến như:
+\begin{itemize}
+    \item Chưa có chức năng dành riêng cho nghệ sĩ
+    \item Tối ưu hóa cho thiết bị di động: Ứng dụng web hiện tại chưa hoàn toàn tối ưu cho các thiết bị có màn hình nhỏ. 
+    \item Xử lý đồng thời: Hạn chế trong việc xử lý nhiều request đồng thời khi số lượng người dùng tăng cao.
+    \item Cache: Hệ thống cache chưa được tối ưu hóa hoàn toàn, dẫn đến việc tải lại nội dung không cần thiết.
+    \item Đề xuất nội dung: Thuật toán đề xuất còn đơn giản, chưa học hỏi được sâu từ hành vi người dùng.
+    \item Đa nền tảng: Thiếu ứng dụng di động native cho iOS và Android, chỉ có phiên bản web responsive.
+    \item Tính năng xã hội: Còn hạn chế trong tương tác xã hội như chia sẻ thời gian thực hay nghe cùng nhau.
+    \item Hỗ trợ offline: Chức năng nghe offline còn giới hạn và không liền mạch như ứng dụng native.
+    \item Đa dạng nội dung: Chưa hỗ trợ podcast, audio book và các loại nội dung âm thanh phi âm nhạc.
+    \item Một số chức năng đang trong quá trình phát triển.
+    \item Phụ thuộc vào API bên thứ ba: Một số tính năng phụ thuộc vào API của bên thứ ba có thể bị ảnh hưởng nếu API thay đổi.
+\end{itemize}
+\subsection{Khả năng mở rộng}
+\begin{itemize}
+    \item Phát triển tính năng realtime cho phép trò chuyện và nghe nhạc cùng nhau.
+    \item Phát triển ứng dụng di động: Xây dựng ứng dụng native cho iOS và Android để nâng cao trải nghiệm người dùng.
+    \item Ứng dụng desktop: Phát triển ứng dụng desktop cho Windows, macOS và Linux.
+    \item Tích hợp với thiết bị thông minh: Mở rộng hỗ trợ cho loa thông minh, TV thông minh và các thiết bị IoT.
+    \item Web extensions: Phát triển tiện ích mở rộng cho trình duyệt để truy cập nhanh vào nền tảng.
+    \item Nội dung đa dạng: Bổ sung podcast, sách nói, hòa nhạc trực tiếp và nội dung giáo dục âm nhạc.
+    \item  Trải nghiệm xã hội: Phát triển tính năng phòng nghe nhạc ảo, chia sẻ trực tiếp, bình luận thời gian thực.
+    \item Biểu diễn trực tuyến: Nền tảng cho phép nghệ sĩ tổ chức buổi biểu diễn trực tuyến.
+    \item Công cụ cho nghệ sĩ: Cung cấp công cụ phân tích và tiếp thị cho nghệ sĩ quản lý sự nghiệp.
+    AI và Machine Learning: Nâng cao khả năng đề xuất, phát hiện nội dung tương tự và cá nhân hóa.
+    \item Blockchain: Tích hợp công nghệ blockchain để quản lý bản quyền và thanh toán cho nghệ sĩ.
+    \item Voice control: Phát triển điều khiển bằng giọng nói tiên tiến.
+    \item Công nghệ âm thanh: Nâng cao trải nghiệm với âm thanh không gian (spatial audio) và âm thanh Hi-Fi.
+    \item AR/VR: Tạo trải nghiệm âm nhạc trong môi trường thực tế ảo hoặc thực tế tăng cường.
+\end{itemize}
+\newpage
+\section*{Tài liệu tham khảo}
+\begin{itemize}
+    \item ChatGPT 
+    \item https://docs.djangoproject.com/en/5.2 
+    \item https://redux-toolkit.js.org/
+    \item https://tailwindcss.com/
+\end{itemize}
+
+\newpage
+\section*{Phụ lục}
+
+\end{document}
